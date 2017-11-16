@@ -121,7 +121,7 @@ let record_cmd =
 
       [],
       Arg.Anons (fun _files -> assert false),
-      Ezcmd.info ~docv:"FILE or DIR" ""
+      Ezcmd.info ~docv:"FILE or DIR" "Print info on $(docv)"
 
     ]
   in

@@ -139,13 +139,14 @@ val info :
          listed if it has both a [doc] and [docv] specified.}} *)
 
 val main_with_subcommands :
-  name:string ->
+  name:string ->          (* name of main command *)
   ?version:string ->
-  ?default:Arg.command ->
+  ?default:Arg.command -> (* if absent, prints help *)
   doc:string ->
   man:block list ->
   ?topics:(string * Cmdliner.Manpage.block list) list ->
-  Arg.command list -> unit
+  Arg.command list ->
+  unit
 
 val main :
   ?version:string ->
