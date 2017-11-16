@@ -1,0 +1,34 @@
+
+if( true || Features_get("tests", false).enabled ){
+
+OCaml.program("test1",
+  ocaml + {
+    files = [
+      "test1.ml";
+    ];
+    requires = [
+      "ezcmd";
+    ];
+  });
+
+OCaml.program("test2",
+  ocaml + {
+    files = [
+      "test2.ml";
+    ];
+    requires = [
+      "ezcmd";
+    ];
+  });
+
+OCaml.program("test3",
+  ocaml + {
+    files = [
+      "test3.ml";
+    ];
+    requires = [
+      "ezcmd";
+    ];
+  });
+
+}
