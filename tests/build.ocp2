@@ -1,5 +1,12 @@
 
-if( true || Features_get("tests", false).enabled ){
+build_tests = true;
+try {
+  build_tests = Features_get("tests", false).enabled;
+} catch("unknown-variable",y){
+  build_tests = true;
+}
+
+if( build_tests ){
 
 OCaml.program("test1",
   ocaml + {

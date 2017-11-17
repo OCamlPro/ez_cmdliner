@@ -42,16 +42,28 @@ module Modules : sig
     type env
 
     type spec =
-      | Bool of (bool -> unit)
+      (* Same as Arg. But they should only appear at most once on the
+       command-line, or Cmdliner will complain. *)
       | Unit of (unit -> unit)
+      | Bool of (bool -> unit)
       | Set of bool ref
       | Clear of bool ref
-      | Int of (int -> unit)
       | String of (string -> unit)
+      | Set_string of string ref
+      | Int of (int -> unit)
+      | Set_int of int ref
+      | Float of (float -> unit)
+      | Set_float of float ref
+      | Symbol of string list * (string -> unit)
+
+      (* Strings is the same as String, but can appear multiple times.
+       The function will be called with all the occurrences. *)
       | Strings of (string list -> unit)
       | File of (string -> unit)
       | Files of (string list -> unit)
 
+      (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
+      at position `n`. `Anons f` means all the anonymous arguments. *)
       | Anon of int * (string -> unit)
       | Anons of (string list -> unit)
 

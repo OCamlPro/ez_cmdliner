@@ -16,6 +16,7 @@ Some differences with `Arg`:
  possible to recover the order of the arguments (except within anonymous
  arguments), or to modify the list of arguments (for example if a plugin is
  loaded);
+* `Arg.Tuple` and `Arg.Rest` are not available in `Ezcmd`.
 
 Building
 --------

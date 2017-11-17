@@ -18,17 +18,30 @@ module Types = struct
   type info = (string list -> Cmdliner.Arg.info)
 
   type spec =
-    | Bool of (bool -> unit)
-    | Unit of (unit -> unit)
-    | Set of bool ref
-    | Clear of bool ref
-    | Int of (int -> unit)
-    | String of (string -> unit)
-    | Strings of (string list -> unit)
-    | File of (string -> unit)
-    | Files of (string list -> unit)
-    | Anon of int * (string -> unit)
-    | Anons of (string list -> unit)
+      (* Same as Arg. But they should only appear at most once on the
+       command-line, or Cmdliner will complain. *)
+      | Unit of (unit -> unit)
+      | Bool of (bool -> unit)
+      | Set of bool ref
+      | Clear of bool ref
+      | String of (string -> unit)
+      | Set_string of string ref
+      | Int of (int -> unit)
+      | Set_int of int ref
+      | Float of (float -> unit)
+      | Set_float of float ref
+      | Symbol of string list * (string -> unit)
+
+      (* Strings is the same as String, but can appear multiple times.
+       The function will be called with all the occurrences. *)
+      | Strings of (string list -> unit)
+      | File of (string -> unit)
+      | Files of (string list -> unit)
+
+      (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
+      at position `n`. `Anons f` means all the anonymous arguments. *)
+      | Anon of int * (string -> unit)
+      | Anons of (string list -> unit)
 
   type arg_list = (string list * spec * info) list
 
@@ -55,6 +68,10 @@ let rec term_of_list list =
      let x = term_of_list tail in
      let arg_info = info args in
      match action with
+     | Unit f ->
+        let term = Arg.(value & flag & arg_info) in
+        let f () x = if x then f () in
+        Term.(const f $ x $ term)
      | Bool f ->
         let term = Arg.(value & flag & arg_info) in
         let f () x = f x in
@@ -63,13 +80,23 @@ let rec term_of_list list =
         let term = Arg.(value & flag & arg_info) in
         let f () x = if x then r := true in
         Term.(const f $ x $ term)
-     | Unit f ->
-        let term = Arg.(value & flag & arg_info) in
-        let f () x = if x then f () in
-        Term.(const f $ x $ term)
      | Clear r ->
         let term = Arg.(value & flag & arg_info) in
         let f () x = if x then r := false in
+        Term.(const f $ x $ term)
+     | String f ->
+        let term = Arg.(value & opt (some string) None & arg_info) in
+        let f () = function
+          | None -> ()
+          | Some s -> f s
+        in
+        Term.(const f $ x $ term)
+     | Set_string r ->
+        let term = Arg.(value & opt (some string) None & arg_info) in
+        let f () = function
+          | None -> ()
+          | Some s -> r := s
+        in
         Term.(const f $ x $ term)
      | Int f ->
         let term = Arg.(value & opt (some int) None & arg_info) in
@@ -77,6 +104,40 @@ let rec term_of_list list =
           | None -> ()
           | Some s -> f s
         in
+        Term.(const f $ x $ term)
+     | Set_int r ->
+        let term = Arg.(value & opt (some int) None & arg_info) in
+        let f () = function
+          | None -> ()
+          | Some s -> r := s
+        in
+        Term.(const f $ x $ term)
+     | Float f ->
+        let term = Arg.(value & opt (some float) None & arg_info) in
+        let f () = function
+          | None -> ()
+          | Some s -> f s
+        in
+        Term.(const f $ x $ term)
+     | Set_float r ->
+        let term = Arg.(value & opt (some float) None & arg_info) in
+        let f () = function
+          | None -> ()
+          | Some s -> r := s
+        in
+        Term.(const f $ x $ term)
+     | Symbol (symbols,f) ->
+        let symbol = Arg.enum (List.map (fun s -> (s,s)) symbols) in
+        let term = Arg.(value & opt (some symbol) None & arg_info) in
+        let f () = function
+          | None -> ()
+          | Some s -> f s
+        in
+        Term.(const f $ x $ term)
+
+     | Strings f ->
+        let term = Arg.(value & opt_all string [] & arg_info) in
+        let f () x = f x in
         Term.(const f $ x $ term)
      | File f ->
         let term = Arg.(value & opt (some file) None & arg_info) in
@@ -89,17 +150,8 @@ let rec term_of_list list =
         let term = Arg.(value & opt_all file [] & arg_info) in
         let f () x = f x in
         Term.(const f $ x $ term)
-     | String f ->
-        let term = Arg.(value & opt (some string) None & arg_info) in
-        let f () = function
-          | None -> ()
-          | Some s -> f s
-        in
-        Term.(const f $ x $ term)
-     | Strings f ->
-        let term = Arg.(value & opt_all string [] & arg_info) in
-        let f () x = f x in
-        Term.(const f $ x $ term)
+
+
      | Anon (n, f) ->
         let term = Arg.(value & pos n (some string) None & arg_info) in
         let f () = function
@@ -185,6 +237,7 @@ let main ?version cmd =
   let cmd = create_sub ?version cmd in
   match Term.eval ~catch:false cmd with
   | `Ok () -> ()
+  | `Error `Parse -> print_endline "toto"
   | t -> Term.exit t
 
 module Modules = struct
