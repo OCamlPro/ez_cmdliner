@@ -32,11 +32,7 @@ module Types = struct
       | Set_float of float ref
       | Symbol of string list * (string -> unit)
 
-      (* Strings is the same as String, but can appear multiple times.
-       The function will be called with all the occurrences. *)
-      | Strings of (string list -> unit)
       | File of (string -> unit)
-      | Files of (string list -> unit)
 
       (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
       at position `n`. `Anons f` means all the anonymous arguments. *)
@@ -73,8 +69,8 @@ let rec term_of_list list =
         let f () x = if x then f () in
         Term.(const f $ x $ term)
      | Bool f ->
-        let term = Arg.(value & flag & arg_info) in
-        let f () x = f x in
+        let term = Arg.(value & flag_all & arg_info) in
+        let f () x = List.iter f x in
         Term.(const f $ x $ term)
      | Set r ->
         let term = Arg.(value & flag & arg_info) in
@@ -85,11 +81,8 @@ let rec term_of_list list =
         let f () x = if x then r := false in
         Term.(const f $ x $ term)
      | String f ->
-        let term = Arg.(value & opt (some string) None & arg_info) in
-        let f () = function
-          | None -> ()
-          | Some s -> f s
-        in
+        let term = Arg.(value & opt_all string [] & arg_info) in
+        let f () x = List.iter f x in
         Term.(const f $ x $ term)
      | Set_string r ->
         let term = Arg.(value & opt (some string) None & arg_info) in
@@ -135,20 +128,9 @@ let rec term_of_list list =
         in
         Term.(const f $ x $ term)
 
-     | Strings f ->
-        let term = Arg.(value & opt_all string [] & arg_info) in
-        let f () x = f x in
-        Term.(const f $ x $ term)
      | File f ->
-        let term = Arg.(value & opt (some file) None & arg_info) in
-        let f () = function
-          | None -> ()
-          | Some s -> f s
-        in
-        Term.(const f $ x $ term)
-     | Files f ->
         let term = Arg.(value & opt_all file [] & arg_info) in
-        let f () x = f x in
+        let f () x = List.iter f x in
         Term.(const f $ x $ term)
 
 

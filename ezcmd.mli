@@ -56,11 +56,7 @@ module Modules : sig
       | Set_float of float ref
       | Symbol of string list * (string -> unit)
 
-      (* Strings is the same as String, but can appear multiple times.
-       The function will be called with all the occurrences. *)
-      | Strings of (string list -> unit)
       | File of (string -> unit)
-      | Files of (string list -> unit)
 
       (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
       at position `n`. `Anons f` means all the anonymous arguments. *)

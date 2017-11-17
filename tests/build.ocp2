@@ -8,30 +8,30 @@ try {
 
 if( build_tests ){
 
-OCaml.program("test1",
+OCaml.program("test_parse",
   ocaml + {
     files = [
-      "test1.ml";
+      "test_parse.ml";
     ];
     requires = [
       "ezcmd";
     ];
   });
 
-OCaml.program("test2",
+OCaml.program("test_subcmds",
   ocaml + {
     files = [
-      "test2.ml";
+      "test_subcmds.ml";
     ];
     requires = [
       "ezcmd";
     ];
   });
 
-OCaml.program("test3",
+OCaml.program("test_cmd",
   ocaml + {
     files = [
-      "test3.ml";
+      "test_cmd.ml";
     ];
     requires = [
       "ezcmd";

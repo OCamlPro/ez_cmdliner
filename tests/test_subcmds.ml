@@ -1,40 +1,11 @@
 
-       (* Implementations, just print the args. *)
-
-
-
-
-type verb = Normal | Quiet | Verbose
-type copts = { debug : bool; verb : verb; prehook : string option }
-
-let str = Printf.sprintf
-let opt_str sv = function None -> "None" | Some v -> str "Some(%s)" (sv v)
-let opt_str_str = opt_str (fun s -> s)
-let verb_str = function
-  | Normal -> "normal" | Quiet -> "quiet" | Verbose -> "verbose"
-
-let pr_copts oc copts = Printf.fprintf oc
-    "debug = %b\nverbosity = %s\nprehook = %s\n"
-    copts.debug (verb_str copts.verb) (opt_str_str copts.prehook)
-
-let initialize copts repodir = Printf.printf
-    "%arepodir = %s\n" pr_copts copts repodir
-
-let record copts name email all ask_deps files = Printf.printf
-    "%aname = %s\nemail = %s\nall = %b\nask-deps = %b\nfiles = %s\n"
-    pr_copts copts (opt_str_str name) (opt_str_str email) all ask_deps
-    (String.concat ", " files)
-
 open Ezcmd.Modules
-
-(* Help sections common to all commands *)
 
 (* Options common to all commands *)
 
 let debug = ref false
 let prehook = ref None
 
-let copts debug verb prehook = { debug; verb; prehook }
 let copts_t =
   let docs = Manpage.s_common_options in
   [
@@ -121,7 +92,7 @@ let record_cmd =
 
       [],
       Arg.Anons (fun _files -> assert false),
-      Ezcmd.info ~docv:"FILE or DIR" ""
+      Ezcmd.info ~docv:"FILE or DIR" "Print info on $(docv)"
 
     ]
   in
@@ -154,5 +125,4 @@ let () =
     ~version
     ~doc
     ~man
-    ~default: initialize_cmd
     [initialize_cmd; record_cmd]
