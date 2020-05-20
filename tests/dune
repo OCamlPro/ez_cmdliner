@@ -1,0 +1,4 @@
+(executables
+ (names test_cmd test_subcmds test_parse)
+ (libraries ez-cmdliner))
+ 
