@@ -1,8 +1,8 @@
 
-OCaml.library("ezcmd",
+OCaml.library("ezCmdliner",
   ocaml + {
     files = [
-      "ezcmd.ml";
+      "ezCmdliner.ml";
     ];
     requires = [
       "cmdliner";
