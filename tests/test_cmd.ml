@@ -1,5 +1,5 @@
 
-open Ezcmd.Modules
+open Ezcmd.TYPES
 
 (* Options common to all commands *)
 
@@ -23,7 +23,7 @@ let () =
       Ezcmd.info "Ask for extra dependencies.";
 
       [],
-      Arg.Anons (fun files ->
+      Anons (fun files ->
           Printf.printf "Number of files: %d\n" (List.length files)
         ),
       Ezcmd.info ~docv:"FILE or DIR" "Print info on $(docv)"
@@ -32,14 +32,14 @@ let () =
   in
   let cmd_doc = "create a patch from unrecorded changes" in
   let cmd_man =
-    [`S Manpage.s_description;
+    [`S Ezcmd.MANPAGE.s_description;
      `P "Creates a patch from changes in the working tree. If you specify\
          a set of files ...";
     ]
   in
   let cmd_action () = print_endline "record" in
   let cmd = {
-    Arg.cmd_name = "record";
+    cmd_name = "record";
     cmd_args;
     cmd_action;
     cmd_man;

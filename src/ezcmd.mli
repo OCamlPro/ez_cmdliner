@@ -24,7 +24,7 @@
  *)
 
 
-module Modules : sig
+module TYPES : sig
 
   type block =
     [ `S of string
@@ -34,16 +34,14 @@ module Modules : sig
     | `Noblank
     | `Blocks of block list ]
 
-  module Manpage = Cmdliner.Manpage
+  type info
+  type env
 
   module Arg : sig
 
-    type info
-    type env
-
     type spec =
       (* Same as Arg. But they should only appear at most once on the
-       command-line, or Cmdliner will complain. *)
+         command-line, or Cmdliner will complain. *)
       | Unit of (unit -> unit)
       | Bool of (bool -> unit)
       | Set of bool ref
@@ -59,50 +57,52 @@ module Modules : sig
       | File of (string -> unit)
 
       (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
-      at position `n`. `Anons f` means all the anonymous arguments. *)
+         at position `n`. `Anons f` means all the anonymous arguments. *)
       | Anon of int * (string -> unit)
       | Anons of (string list -> unit)
 
-    type arg_list = (string list * spec * info) list
-
-    type command = {
-        cmd_name : string;
-        cmd_action : (unit -> unit);
-        cmd_args : arg_list;
-        cmd_man : block list;
-        cmd_doc : string;
-      }
-
-    (* Partial Compatibility with Stdlib Arg module *)
-    val parse :
-      ?name:string ->
-      ?version:string ->
-      ?man: block list ->
-      (string * spec * string) list ->
-      (string -> unit) ->
-      string ->
-      unit
-
-    val translate :
-      ?docs:string ->
-      (string * spec * string) list ->
-      (string list * spec * info) list
-
-    val translate_anon:
-      (string -> unit) ->
-      (string list * spec * info) list
-
   end
+
+  type arg_list = (string list * Arg.spec * info) list
+
+  type command = {
+    cmd_name : string;
+    cmd_action : (unit -> unit);
+    cmd_args : arg_list;
+    cmd_man : block list;
+    cmd_doc : string;
+  }
+
 end
 
+open TYPES
 
-open Modules
+module MANPAGE = Cmdliner.Manpage
+
+    (* Partial Compatibility with Stdlib Arg module *)
+val parse :
+  ?name:string ->
+  ?version:string ->
+  ?man: block list ->
+  (string * Arg.spec * string) list ->
+  (string -> unit) ->
+  string ->
+  unit
+
+val translate :
+  ?docs:string ->
+  (string * Arg.spec * string) list ->
+  (string list * Arg.spec * info) list
+
+val translate_anon:
+  (string -> unit) ->
+  (string list * Arg.spec * info) list
 
 val env :
   ?docs:string ->
   ?doc:string ->
   string ->
-  Arg.env
+  env
   (** [env ~docs ~doc var] describes an environment variable
       [var]. [doc] is the man page information of the environment
       variable, defaults to ["undocumented"]. [docs] is the title of
@@ -118,9 +118,9 @@ val env :
 val info :
   ?docs:string ->
   ?docv:string ->
-  ?env:Arg.env ->
+  ?env:env ->
   string -> (* doc *)
-  Arg.info
+  info
   (** [info docs docv env doc] defines information for
       an argument.
       {ul
@@ -149,14 +149,14 @@ val info :
 val main_with_subcommands :
   name:string ->          (* name of main command *)
   ?version:string ->
-  ?default:Arg.command -> (* if absent, prints help *)
+  ?default:command -> (* if absent, prints help *)
   doc:string ->
   man:block list ->
   ?topics:(string * Cmdliner.Manpage.block list) list ->
-  Arg.command list ->
+  command list ->
   unit
 
 val main :
   ?version:string ->
-  Arg.command ->
+  command ->
   unit

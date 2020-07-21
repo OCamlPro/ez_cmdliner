@@ -10,16 +10,20 @@
 (*                                                                        *)
 (**************************************************************************)
 
-open Cmdliner
+module TYPES = struct
 
-module Types = struct
+  type block =
+    [ `S of string | `P of string | `Pre of string | `I of string * string
+    | `Noblank | `Blocks of block list ]
 
   type env = Cmdliner.Term.env_info
   type info = (string list -> Cmdliner.Arg.info)
 
-  type spec =
+  module Arg = struct
+
+    type spec =
       (* Same as Arg. But they should only appear at most once on the
-       command-line, or Cmdliner will complain. *)
+         command-line, or Cmdliner will complain. *)
       | Unit of (unit -> unit)
       | Bool of (bool -> unit)
       | Set of bool ref
@@ -35,11 +39,13 @@ module Types = struct
       | File of (string -> unit)
 
       (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
-      at position `n`. `Anons f` means all the anonymous arguments. *)
+         at position `n`. `Anons f` means all the anonymous arguments. *)
       | Anon of int * (string -> unit)
       | Anons of (string list -> unit)
 
-  type arg_list = (string list * spec * info) list
+  end
+
+  type arg_list = (string list * Arg.spec * info) list
 
   type command = {
       cmd_name : string;
@@ -50,10 +56,12 @@ module Types = struct
     }
 end
 
-open Types
+open TYPES
+open TYPES.Arg
+open Cmdliner
 
 let info ?docs ?docv ?env doc =
-  Arg.info ?docs ?docv ?env ~doc
+  Cmdliner.Arg.info ?docs ?docv ?env ~doc
 
 let env = Term.env_info
 
@@ -222,54 +230,41 @@ let main ?version cmd =
   | `Error `Parse -> print_endline "toto"
   | t -> Term.exit t
 
-module Modules = struct
+module MANPAGE = Cmdliner.Manpage
 
-  type block =
-    [ `S of string | `P of string | `Pre of string | `I of string * string
-      | `Noblank | `Blocks of block list ]
 
-  module Manpage = Cmdliner.Manpage
+let translate ?docs arg_list =
+  List.map (fun (arg, spec, doc) ->
+      let len = String.length arg in
+      let arg =
+        if len > 0 && arg.[0] = '-' then
+          if len > 1 && arg.[1] = '-' then
+            String.sub arg 2 (len-2)
+          else
+            String.sub arg 1 (len-1)
+        else
+          arg
+      in
+      [arg], spec, info ?docs doc
+    ) arg_list
 
-  module Arg = struct
+let translate_anon arg_anon =
+  [
+    [], Anons (fun list ->
+        List.iter arg_anon list), info "General arguments"
+  ]
 
-    include Types
-
-    let translate ?docs arg_list =
-      List.map (fun (arg, spec, doc) ->
-            let len = String.length arg in
-            let arg =
-              if len > 0 && arg.[0] = '-' then
-                if len > 1 && arg.[1] = '-' then
-                  String.sub arg 2 (len-2)
-                else
-                  String.sub arg 1 (len-1)
-              else
-                arg
-            in
-            [arg], spec, info ?docs doc
-        ) arg_list
-
-    let translate_anon arg_anon =
-      [
-        [], Anons (fun list ->
-                List.iter arg_anon list), info "General arguments"
-      ]
-
-    let parse ?name ?version ?(man = []) arg_list arg_anon arg_usage =
-      let cmd_args = translate arg_list @
-                       translate_anon  arg_anon in
-      let cmd_name = match name with
-          None -> "COMMAND"
-        | Some cmd_name -> cmd_name in
-      let cmd = {
-          cmd_name;
-          cmd_doc = arg_usage;
-          cmd_args;
-          cmd_man = man;
-          cmd_action = (fun () -> ());
-        } in
-      main ?version cmd
-
-  end
-
-end
+let parse ?name ?version ?(man = []) arg_list arg_anon arg_usage =
+  let cmd_args = translate arg_list @
+                 translate_anon  arg_anon in
+  let cmd_name = match name with
+      None -> "COMMAND"
+    | Some cmd_name -> cmd_name in
+  let cmd = {
+    cmd_name;
+    cmd_doc = arg_usage;
+    cmd_args;
+    cmd_man = man;
+    cmd_action = (fun () -> ());
+  } in
+  main ?version cmd

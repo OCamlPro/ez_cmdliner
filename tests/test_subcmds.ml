@@ -1,5 +1,5 @@
 
-open Ezcmd.Modules
+open Ezcmd.TYPES
 
 (* Options common to all commands *)
 
@@ -7,7 +7,7 @@ let debug = ref false
 let prehook = ref None
 
 let copts_t =
-  let docs = Manpage.s_common_options in
+  let docs = Ezcmd.MANPAGE.s_common_options in
   [
     ["debug"],
     Arg.Bool (fun bool -> debug := bool),
@@ -30,13 +30,13 @@ let copts_t =
 (* Commands *)
 
 let help_secs = [
- `S Manpage.s_common_options;
+ `S Ezcmd.MANPAGE.s_common_options;
  `P "These options are common to all commands.";
  `S "MORE HELP";
  `P "Use `$(mname) $(i,COMMAND) --help' for help on a single command.";`Noblank;
  `P "Use `$(mname) help patterns' for help on patch matching."; `Noblank;
  `P "Use `$(mname) help environment' for help on environment variables.";
- `S Manpage.s_bugs; `P "Check bug reports at http://bugs.example.org.";]
+ `S Ezcmd.MANPAGE.s_bugs; `P "Check bug reports at http://bugs.example.org.";]
 
 let initialize_cmd =
   let repodir = ref None in
@@ -53,13 +53,13 @@ let initialize_cmd =
     ] @ copts_t
   in
   let cmd_man = [
-    `S Manpage.s_description;
+    `S Ezcmd.MANPAGE.s_description;
     `P "Turns the current directory into a Darcs repository. Any\
        existing files and subdirectories become ...";
     `Blocks help_secs; ]
   in
   {
-      Arg.cmd_name = "init";
+      cmd_name = "init";
       cmd_args;
       cmd_action;
       cmd_doc = "make the current directory a repository";
@@ -79,33 +79,33 @@ let record_cmd =
       Ezcmd.info ~docv:"NAME" "Name of the patch.";
 
       ["A"; "author"],
-      Arg.String (fun _s -> assert false),
+      String (fun _s -> assert false),
       Ezcmd.info ~docv:"EMAIL" "Specifies the author's identity.";
 
       ["a"; "all"],
-      Arg.Bool (fun _bool -> assert false),
+      Bool (fun _bool -> assert false),
       Ezcmd.info "Answer yes to all patches.";
 
       ["ask-deps"],
-      Arg.Bool (fun _bool -> assert false),
+      Bool (fun _bool -> assert false),
       Ezcmd.info "Ask for extra dependencies.";
 
       [],
-      Arg.Anons (fun _files -> assert false),
+      Anons (fun _files -> assert false),
       Ezcmd.info ~docv:"FILE or DIR" "Print info on $(docv)"
 
     ]
   in
   let cmd_doc = "create a patch from unrecorded changes" in
   let cmd_man =
-    [`S Manpage.s_description;
+    [`S Ezcmd.MANPAGE.s_description;
      `P "Creates a patch from changes in the working tree. If you specify\
          a set of files ...";
      `Blocks help_secs; ]
   in
   let cmd_action () = print_endline "record" in
   {
-    Arg.cmd_name = "record";
+    cmd_name = "record";
     cmd_args;
     cmd_action;
     cmd_man;
