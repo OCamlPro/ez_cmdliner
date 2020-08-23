@@ -1,31 +1,29 @@
 [package]
-authors = ["Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>"]
-copyright = "OCamlPro SAS & Origin Labs SAS"
+authors = ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+copyright = "OCamlPro SAS"
 edition = "4.10.0"
 github-organization = "ocamlpro"
-kind = "program"
+kind = "library"
 license = "LGPL2"
-min-edition = "4.10.0"
-name = "ez-cmdliner"
-synopsis = "Easy version of Cmdliner"
+min-edition = "4.07.0"
+name = "ez_cmdliner"
+synopsis = "Easy interface to Cmdliner à la Arg.parse with sub-commands"
 version = "0.1.0"
-
-# keys that you could also define:
-# dev-repo = "...dev-repo..."
-# bug-reports = "...bug-reports..."
-# documentation = "...documentation..."
-# homepage = "...homepage..."
 
 [package]
 description = """
-ez-cmdliner is a simple layer on top of Cmdliner to provide an interface
+ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
 à la Arg.parse with an extension for simple sub-commands.
 """
 
 [drom]
-skip = "src/main.ml"
+skip = ""
 
 [dependencies]
+cmdliner = "1.0.0"
 
 [tools]
 dune = "2.6.0"
+
+[package]
+wrapped = false
