@@ -1,4 +1,8 @@
+
+/ez-cmdliner
 *~
-_obuild
-.merlin
 _build
+.merlin
+/_drom
+/_opam
+/_build
