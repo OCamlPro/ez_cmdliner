@@ -2,7 +2,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# ez-cmdliner documentation build configuration file, created by
+# ez_cmdliner documentation build configuration file, created by
 # sphinx-quickstart.
 #
 # This file is execfile()d with the current directory set to its
@@ -51,9 +51,9 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = 'ez-cmdliner'
-copyright = 'OCamlPro SAS & Origin Labs SAS'
-author = 'Fabrice Le Fessant <fabrice.le_fessant@origin-labs.com>'
+project = 'ez_cmdliner'
+copyright = 'OCamlPro SAS'
+author = 'Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -168,7 +168,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ez-cmdliner.tex', 'ez-cmdliner Documentation',
+    (master_doc, 'ez_cmdliner.tex', 'ez_cmdliner Documentation',
      'author', 'manual'),
 ]
 
@@ -178,7 +178,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ez-cmdliner', 'ez-cmdliner Documentation',
+    (master_doc, 'ez_cmdliner', 'ez_cmdliner Documentation',
      [author], 1)
 ]
 
@@ -189,8 +189,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ez-cmdliner', 'ez-cmdliner Documentation',
-     author, 'ez-cmdliner', 'One line description of project.',
+    (master_doc, 'ez_cmdliner', 'ez_cmdliner Documentation',
+     author, 'ez_cmdliner', 'One line description of project.',
      'Miscellaneous'),
 ]
 

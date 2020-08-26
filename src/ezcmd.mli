@@ -23,9 +23,7 @@
 
  *)
 
-
 module TYPES : sig
-
   type block =
     [ `S of string
     | `P of string
@@ -35,10 +33,10 @@ module TYPES : sig
     | `Blocks of block list ]
 
   type info
+
   type env
 
   module Arg : sig
-
     type spec =
       (* Same as Arg. But they should only appear at most once on the
          command-line, or Cmdliner will complain. *)
@@ -53,37 +51,32 @@ module TYPES : sig
       | Float of (float -> unit)
       | Set_float of float ref
       | Symbol of string list * (string -> unit)
-
       | File of (string -> unit)
-
       (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
          at position `n`. `Anons f` means all the anonymous arguments. *)
       | Anon of int * (string -> unit)
       | Anons of (string list -> unit)
-
   end
 
   type arg_list = (string list * Arg.spec * info) list
 
   type command = {
     cmd_name : string;
-    cmd_action : (unit -> unit);
+    cmd_action : unit -> unit;
     cmd_args : arg_list;
     cmd_man : block list;
     cmd_doc : string;
   }
-
 end
 
 open TYPES
-
 module MANPAGE = Cmdliner.Manpage
 
-    (* Partial Compatibility with Stdlib Arg module *)
+(* Partial Compatibility with Stdlib Arg module *)
 val parse :
   ?name:string ->
   ?version:string ->
-  ?man: block list ->
+  ?man:block list ->
   (string * Arg.spec * string) list ->
   (string -> unit) ->
   string ->
@@ -94,16 +87,10 @@ val translate :
   (string * Arg.spec * string) list ->
   (string list * Arg.spec * info) list
 
-val translate_anon:
-  (string -> unit) ->
-  (string list * Arg.spec * info) list
+val translate_anon : (string -> unit) -> (string list * Arg.spec * info) list
 
-val env :
-  ?docs:string ->
-  ?doc:string ->
-  string ->
-  env
-  (** [env ~docs ~doc var] describes an environment variable
+val env : ?docs:string -> ?doc:string -> string -> env
+(** [env ~docs ~doc var] describes an environment variable
       [var]. [doc] is the man page information of the environment
       variable, defaults to ["undocumented"]. [docs] is the title of
       the man page section in which the environment variable will be
@@ -115,13 +102,9 @@ val env :
       {- [$(env)], the value of [var].}
       {- The variables mentioned in {!info}}} *)
 
-val info :
-  ?docs:string ->
-  ?docv:string ->
-  ?env:env ->
-  string -> (* doc *)
-  info
-  (** [info docs docv env doc] defines information for
+val info : ?docs:string -> ?docv:string -> ?env:env -> string -> (* doc *)
+                                                                 info
+(** [info docs docv env doc] defines information for
       an argument.
       {ul
       {- [env] defines the name of an environment variable which is
@@ -147,16 +130,15 @@ val info :
          listed if it has both a [doc] and [docv] specified.}} *)
 
 val main_with_subcommands :
-  name:string ->          (* name of main command *)
+  name:string ->
+  (* name of main command *)
   ?version:string ->
-  ?default:command -> (* if absent, prints help *)
+  ?default:command ->
+  (* if absent, prints help *)
   doc:string ->
   man:block list ->
   ?topics:(string * Cmdliner.Manpage.block list) list ->
   command list ->
   unit
 
-val main :
-  ?version:string ->
-  command ->
-  unit
+val main : ?version:string -> command -> unit

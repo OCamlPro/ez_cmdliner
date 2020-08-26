@@ -1,4 +1,6 @@
 
-  ## 2020-07-23
+## v1.1.0 (2020-07-25)
 
-* Initial commit
+* Renamed to ez_cmdliner
+* Use `drom` to generate distribution files
+

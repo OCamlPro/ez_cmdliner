@@ -1,4 +1,5 @@
 
+(* Credits: https://github.com/ocaml/dune *)
 open StdLabels
 
 let skip_test =
