@@ -9,8 +9,9 @@ ae11fa12ead5d2c93e6698ea4a3b04d3 Makefile
 1f1381636e7335ab19b3eb727919a9d0 README.md
 d41d8cd98f00b204e9800998ecf8427e docs/.nojekyll
 4bc82412b845872bad1e8303b17ff27d docs/doc/index.html
-03a9de2482dd85c15d916b4acfa409dd docs/index.html
+a8dbb6eb55171231c2578d310f904346 docs/index.html
 48811b1c77baea237442383c9b236487 docs/sphinx/index.html
+a95f1ab7d178b468eff6188a527535d9 docs/style.css
 89d32e4db4897cb7e47e49193a668e61 drom.toml
 a18e83e1b49c740e3b73a7a40e641a87 dune-project
 d41d8cd98f00b204e9800998ecf8427e dune-workspace
