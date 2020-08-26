@@ -20,7 +20,7 @@ jobs:
           - false
 
         include:
-          - ocaml-version: 4.07.0
+          - ocaml-version: 4.03.0
             os: ubuntu-latest
             skip_test: true
 
