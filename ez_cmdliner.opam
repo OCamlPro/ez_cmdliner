@@ -15,6 +15,7 @@ homepage: "https://ocamlpro.github.io/ez_cmdliner"
 doc: "https://ocamlpro.github.io/ez_cmdliner/sphinx"
 bug-reports: "https://github.com/ocamlpro/ez_cmdliner/issues"
 dev-repo: "git+https://github.com/ocamlpro/ez_cmdliner.git"
+tags: "org:ocamlpro"
 build: [
   ["dune" "subst"] {pinned}
   [

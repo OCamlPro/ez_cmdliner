@@ -72,8 +72,8 @@ let rec term_of_list list =
       let arg_info = info args in
       match action with
       | Unit f ->
-          let term = Arg.(value & flag & arg_info) in
-          let f () x = if x then f () in
+          let term = Arg.(value & flag_all & arg_info) in
+          let f () x = List.iter (fun x -> if x then f ()) x in
           Term.(const f $ x $ term)
       | Bool f ->
           let term = Arg.(value & flag_all & arg_info) in
