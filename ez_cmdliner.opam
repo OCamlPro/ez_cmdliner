@@ -5,7 +5,7 @@ name: "ez_cmdliner"
 version: "0.1.1"
 license: "LGPL-2.1-with-OCaml-exception"
 synopsis: "Easy interface to Cmdliner à la Arg.parse with sub-commands"
-description: """
+description: """\
 ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
 à la Arg.parse with an extension for simple sub-commands.
 """
@@ -32,6 +32,10 @@ build: [
 ]
 depends: [
   "ocaml" {>= "4.03.0"}
+  "dune" {>= "2.6.0"}
   "cmdliner" {>= "1.0.0" & < "2.0.0"}
-  "dune" {>= "2.6.0" & < "3.0.0"}
+  "ppx_inline_test" {with-test}
+  "ppx_expect" {with-test}
+  "odoc" {with-doc}
+  "ocamlformat" {with-test}
 ]

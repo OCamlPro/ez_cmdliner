@@ -4,6 +4,7 @@
 (allow_approximate_merlin)
 (generate_opam_files false)
 (version 0.1.1)
+(formatting (enabled_for ocaml reason))
 
 (package
  (name ez_cmdliner)
@@ -12,6 +13,8 @@
  (depends
    (ocaml (>= 4.03.0))
    (cmdliner (and (>= 1.0.0) (< 2.0.0)))
-   (dune (and (>= 2.6.0) (< 3.0.0)))
- )
-)
+   ppx_inline_test
+   ppx_expect
+   odoc
+   ocamlformat
+ ))
