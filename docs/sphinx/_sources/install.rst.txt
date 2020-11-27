@@ -25,7 +25,7 @@ Then, you need to install all the dependencies::
 
 Finally, you can build the package and install it::
 
-  eval ${opam env}
+  eval $(opam env)
   dune build
   dune install
 
@@ -41,4 +41,3 @@ targets:
 * :code:`doc`: build documentation with :code:`odoc`
 * :code:`fmt`: format the code using :code:`ocamlformat`
 * :code:`test`: run tests
-
