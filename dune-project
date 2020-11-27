@@ -12,7 +12,8 @@
  (description "ez_cmdliner is a simple layer on top of Cmdliner to provide an interface\n\195\160 la Arg.parse with an extension for simple sub-commands.\n")
  (depends
    (ocaml (>= 4.06.0))
-   (ocplib_stuff ( >= 0.1 ))
+   ocplib_stuff
+   (ez_subst ( >= 0.1 ))
    (cmdliner (and (>= 1.0.0) (< 2.0.0)))
    ppx_inline_test
    ppx_expect

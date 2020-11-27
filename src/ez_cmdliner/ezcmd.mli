@@ -196,6 +196,8 @@ module V2 : sig
     val raw_env : TYPES.env -> RAWTYPES.env
     val raw_info : TYPES.info -> RAWTYPES.info
     val raw_sub : TYPES.sub -> RAWTYPES.sub
+
+    val to_rst : TYPES.sub list -> arg_list -> string
   end
 end
 
