@@ -1,1 +1,53 @@
-Bonjour
+COP(1)                            Cop Manual                            COP(1)
+
+
+
+NNAAMMEE
+       cop - a generic build system
+
+SSYYNNOOPPSSIISS
+       ccoopp _C_O_M_M_A_N_D ...
+
+       Hello
+
+CCOOMMMMAANNDDSS
+       hheellpp
+           display help about cop and cop commands
+
+       iinniitt
+           make the current directory a repository
+
+       rreeccoorrdd
+           create a patch from unrecorded changes
+
+CCOOMMMMOONN OOPPTTIIOONNSS
+       These options are common to all commands.
+
+       ----hheellpp[=_F_M_T] (default=auto)
+           Show this help in format _F_M_T. The value _F_M_T must be one of `auto',
+           `pager', `groff' or `plain'. With `auto', the format is `pager` or
+           `plain' whenever the TTEERRMM env var is `dumb' or undefined.
+
+       ----vveerrssiioonn
+           Show version information.
+
+MMOORREE HHEELLPP
+       Use `ccoopp _C_O_M_M_A_N_D --help' for help on a single command.
+       Use `ccoopp help patterns' for help on patch matching.
+       Use `ccoopp help environment' for help on environment variables.
+
+EEXXIITT SSTTAATTUUSS
+       ccoopp exits with the following status:
+
+       0   on success.
+
+       124 on command line parsing errors.
+
+       125 on unexpected internal errors (bugs).
+
+BBUUGGSS
+       Check bug reports at http://bugs.example.org.
+
+
+
+Cop 1.2.3                                                               COP(1)

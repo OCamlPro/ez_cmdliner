@@ -2,5 +2,6 @@
 (env
 
 )
-(dirs src vendors )
+(dirs share src test vendors )
+
 

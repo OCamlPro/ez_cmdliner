@@ -11,10 +11,11 @@ min-edition = "4.06.0"
 mode = "binary"
 name = "ez_cmdliner"
 synopsis = "Easy interface to Cmdliner à la Arg.parse with sub-commands"
-version = "0.1.1"
+version = "0.2.0"
 windows-ci = true
 
 # keys that you could also define:
+# build-profile = "...build-profile..."
 # sphinx-target = "...sphinx-target..."
 # archive = "...archive..."
 # dev-repo = "...dev-repo..."
@@ -45,12 +46,11 @@ for-test = true
 for-test = true
 
 [project]
+generators = ["ocamllex", "ocamlyacc"]
 pack-modules = false
 skip-dirs = []
 
 
 [[package]]
 dir = "src/ez_cmdliner"
-kind = "library"
-name = "ez_cmdliner"
 
