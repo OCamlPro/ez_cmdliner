@@ -252,7 +252,7 @@ module V2 = struct
       ( Term.(ret (const (`Help (`Pager, None)))),
         Term.info name ?version ~doc ~sdocs ~exits ~man )
 
-    let main_with_subcommands ~name ?version ?default ~doc ?(man=[]) ?(topics = []) ?(common_args=[]) subs
+    let main_with_subcommands ~name ?version ?default ~doc ?(man=[]) ?(topics = []) ?(common_args=[]) ?argv subs
       =
       let cmds = List.map (create_sub ?version ~common_args) subs in
       let default_cmd =
@@ -264,13 +264,13 @@ module V2 = struct
         if List.exists (fun cmd -> cmd.sub_name = "help") subs then cmds
         else cmds @ [ help_cmd ~name ~man ~topics ]
       in
-      match Term.eval_choice ~catch:false default_cmd cmds with
+      match Term.eval_choice ~catch:false default_cmd ?argv cmds with
       | `Ok () -> ()
       | t -> Term.exit t
 
-    let main ?version cmd =
+    let main ?version ?argv cmd =
       let cmd = create_sub ?version cmd ~common_args:[] in
-      match Term.eval ~catch:false cmd with
+      match Term.eval ~catch:false ?argv cmd with
       | `Ok () -> ()
       | `Error `Parse -> print_endline "toto"
       | t -> Term.exit t
@@ -329,7 +329,7 @@ module V2 = struct
                   | None ->
                       s
         in
-        EZ_SUBST.string ~paren:paren map s
+        EZ_SUBST.string ~paren:paren ~ctxt:map s
 
       let man_to_rst ?(map = StringMap.empty) ( man : block list ) =
         let b = Buffer.create 1000 in
@@ -356,7 +356,61 @@ module V2 = struct
         Buffer.contents b
 
 
-      let to_rst commands _common_args =
+      let arg_name info name =
+        match info.arg_docv with
+        | None -> name
+        | Some name -> name
+
+      let arg_name f info =
+        match f with
+        | Arg.String _ -> arg_name info "STRING"
+        | Arg.Bool _ -> arg_name info "BOOL"
+        | Arg.Int _ -> arg_name info "INT"
+        | Arg.Float _ -> arg_name info "FLOAT"
+        | Arg.Set_string _ -> arg_name info "STRING"
+        | Arg.Set_bool _ -> arg_name info "BOOL"
+        | Arg.Set_int _ -> arg_name info "INT"
+        | Arg.Set_float _ -> arg_name info "FLOAT"
+        | Arg.Unit _
+        | Arg.Set _
+        | Arg.Clear _
+          -> ""
+        | Arg.File _ -> arg_name info "FILE"
+        | Arg.Anon (_, _) -> arg_name info "ARGUMENT"
+        | Arg.Anons _ -> arg_name info "ARGUMENTS"
+        | Arg.Symbol (list, _) ->
+            arg_name info (Printf.sprintf "[%s]"
+                             ( String.concat "|" list))
+
+
+      let print_options b options =
+
+        List.iter (fun (option, f, info)  ->
+            let arg_name = arg_name f info in
+            let map = StringMap.add "docv" arg_name StringMap.empty in
+            Printf.bprintf b "\n* %s "
+              (match option with
+               | [] ->
+                   Printf.sprintf ":code:`%s`" arg_name
+               | _ ->
+                   let arg_name = if arg_name = "" then "" else
+                       " " ^ arg_name in
+                   String.concat " or " @@
+                   List.map (fun s ->
+                       if String.length s = 1 then
+                         Printf.sprintf ":code:`-%s%s`" s arg_name
+                       else
+                         Printf.sprintf ":code:`--%s%s`" s arg_name
+                     ) option );
+            Printf.bprintf b "  %s%s\n"
+              (match info.arg_version with
+               | None -> ""
+               | Some version -> Printf.sprintf "(since version %s) " version)
+              ( doclang_to_rst ~map info.arg_doc )
+
+          ) options
+
+      let to_rst commands common_args =
 
         let commands = List.map raw_sub commands in
 
@@ -368,8 +422,17 @@ module V2 = struct
           {|
 Sub-commands and Arguments
 ==========================
+|};
 
-Overview::
+        begin match common_args with
+          | [] -> ()
+          | _ ->
+              Printf.bprintf b "Common arguments to all sub-commands:\n\n";
+              print_options b ( List.sort compare common_args );
+        end;
+
+        Printf.bprintf b {|
+Overview of sub-commands::
 |};
 
         List.iter (fun cmd ->
@@ -400,32 +463,6 @@ Overview::
             let options = List.sort compare options in
             let options = List.map (fun (args, f, info) ->
                 (args, f, raw_info info)) options in
-            let arg_name info name =
-              match info.arg_docv with
-              | None -> name
-              | Some name -> name
-            in
-            let arg_name f info =
-              match f with
-              | Arg.String _ -> arg_name info "STRING"
-              | Arg.Bool _ -> arg_name info "BOOL"
-              | Arg.Int _ -> arg_name info "INT"
-              | Arg.Float _ -> arg_name info "FLOAT"
-              | Arg.Set_string _ -> arg_name info "STRING"
-              | Arg.Set_bool _ -> arg_name info "BOOL"
-              | Arg.Set_int _ -> arg_name info "INT"
-              | Arg.Set_float _ -> arg_name info "FLOAT"
-              | Arg.Unit _
-              | Arg.Set _
-              | Arg.Clear _
-                -> ""
-              | Arg.File _ -> arg_name info "FILE"
-              | Arg.Anon (_, _) -> arg_name info "ARGUMENT"
-              | Arg.Anons _ -> arg_name info "ARGUMENTS"
-              | Arg.Symbol (list, _) ->
-                  arg_name info (Printf.sprintf "[%s]"
-                                   ( String.concat "|" list))
-            in
 
 
             Printf.bprintf b "\n**USAGE**\n::\n  \n  drom %s%s [OPTIONS]\n\n"
@@ -437,35 +474,7 @@ Overview::
                         | _ -> "") options))
             ;
             Printf.bprintf b "Where options are:\n\n";
-
-            let print_options options =
-
-              List.iter (fun (option, f, info)  ->
-                  let arg_name = arg_name f info in
-                  let map = StringMap.add "docv" arg_name StringMap.empty in
-                  Printf.bprintf b "\n* %s "
-                    (match option with
-                     | [] ->
-                         Printf.sprintf ":code:`%s`" arg_name
-                     | _ ->
-                         let arg_name = if arg_name = "" then "" else
-                             " " ^ arg_name in
-                         String.concat " or " @@
-                         List.map (fun s ->
-                             if String.length s = 1 then
-                               Printf.sprintf ":code:`-%s%s`" s arg_name
-                             else
-                               Printf.sprintf ":code:`--%s%s`" s arg_name
-                           ) option );
-                  Printf.bprintf b "  %s%s\n"
-                    (match info.arg_version with
-                     | None -> ""
-                     | Some version -> Printf.sprintf "(since version %s) " version)
-                    ( doclang_to_rst ~map info.arg_doc )
-
-                ) options;
-            in
-            print_options options;
+            print_options b options;
 
           ) commands;
 
@@ -496,14 +505,15 @@ module V1 = struct
         sub_doc = cmd.cmd_doc ;
       }
 
-    let main_with_subcommands ~name ?version ?default ~doc ?man ?topics cmds =
+    let main_with_subcommands
+        ~name ?version ?default ~doc ?man ?topics ?argv cmds =
       let default = match default with
         | None -> None
         | Some cmd -> Some ( sub_of_cmd cmd ) in
-      main_with_subcommands ~name ?version ?default ~doc ?man ?topics
+      main_with_subcommands ~name ?version ?default ~doc ?man ?topics ?argv
         ( List.map sub_of_cmd cmds )
 
-    let main ?version cmd = main ?version (sub_of_cmd cmd)
+    let main ?version ?argv cmd = main ?version ?argv (sub_of_cmd cmd)
   end
 end
 
