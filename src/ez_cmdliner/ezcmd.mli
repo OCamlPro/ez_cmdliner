@@ -159,10 +159,14 @@ module V2 : sig
       ?man:block list ->
       ?topics:(string * Cmdliner.Manpage.block list) list ->
       ?common_args: arg_list ->
+      ?argv: string array ->
       sub list ->
       unit
 
-    val main : ?version:string -> sub -> unit
+    val main :
+      ?version:string ->
+      ?argv: string array ->
+      sub -> unit
 
     module RAWTYPES : sig
 
@@ -196,6 +200,8 @@ module V2 : sig
     val raw_env : TYPES.env -> RAWTYPES.env
     val raw_info : TYPES.info -> RAWTYPES.info
     val raw_sub : TYPES.sub -> RAWTYPES.sub
+
+    val to_rst : TYPES.sub list -> arg_list -> string
   end
 end
 
@@ -320,15 +326,20 @@ module V1 : sig
       doc:string ->
       ?man:block list ->
       ?topics:(string * Cmdliner.Manpage.block list) list ->
+      ?argv: string array ->
       command list ->
       unit
 
-    val main : ?version:string -> command -> unit
+    val main :
+      ?version:string ->
+      ?argv: string array ->
+      command -> unit
 
   end
 end
 
 include (module type of V1.Ezcmd)
+
 val main_with_subcommands2 :
   name:string ->
   ?version:string ->
@@ -337,4 +348,5 @@ val main_with_subcommands2 :
   ?man:MANPAGE.block list ->
   ?topics:(string * MANPAGE.block list) list ->
   ?common_args: TYPES.arg_list ->
+  ?argv: string array ->
   TYPES.sub list -> unit
