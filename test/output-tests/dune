@@ -21,7 +21,7 @@
 (rule
  (with-stdout-to
   test2.output
-  (run %{exe:test2.exe})))
+  (run %{exe:test2.exe} --help=plain)))
 
 (rule
  (alias runtest)
