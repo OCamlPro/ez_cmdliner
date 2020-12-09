@@ -1,5 +1,7 @@
 kind = "library"
 name = "ez_cmdliner"
+pack-modules = false
+
 [dependencies]
 ez_subst = ">=0.1"
-ocplib_stuff = ""
+ocplib_stuff = ">=0.3"

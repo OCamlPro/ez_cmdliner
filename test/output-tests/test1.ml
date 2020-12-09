@@ -1,3 +1,4 @@
+open Ezcmd.V1
 open Ezcmd.TYPES
 
 (* Options common to all commands *)
