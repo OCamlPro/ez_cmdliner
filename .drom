@@ -2,7 +2,7 @@
 
 # hash of toml configuration files
 # used for generation of all files
-dc5bcd019908e791d05975e0e429abf8:.
+8879fa665fcff86d6c09ae9332fa118d:.
 # end context for .
 
 # begin context for .github/workflows/ci.ml
@@ -112,12 +112,12 @@ df544cfaf9078d1bba2f90ed1b5adf5f:dune
 
 # begin context for dune-project
 # file dune-project
-4138a7353a2d6c19669d9e0b7324cf40:dune-project
+6520c541f519e786dc8731cb7f5ab32e:dune-project
 # end context for dune-project
 
 # begin context for ez_cmdliner.opam
 # file ez_cmdliner.opam
-7724e633fa0917ddf11ea66fdefaf612:ez_cmdliner.opam
+9f512554f33ce6cd6282e179dce99e1e:ez_cmdliner.opam
 # end context for ez_cmdliner.opam
 
 # begin context for sphinx/_static/css/fixes.css
@@ -152,12 +152,12 @@ f3782e7d076a8dc7c8b1d1910389ea2b:sphinx/install.rst
 
 # begin context for src/ez_cmdliner/dune
 # file src/ez_cmdliner/dune
-a6ba171a2bd3b18c6a9f2dec61ff9630:src/ez_cmdliner/dune
+146832b2faeeaabb8dddb969b36e1f23:src/ez_cmdliner/dune
 # end context for src/ez_cmdliner/dune
 
 # begin context for src/ez_cmdliner/index.mld
 # file src/ez_cmdliner/index.mld
-257b434deceb88414c59ac2c2a2f53f1:src/ez_cmdliner/index.mld
+9116e9814112a2ef8255607efece9d2e:src/ez_cmdliner/index.mld
 # end context for src/ez_cmdliner/index.mld
 
 # begin context for src/ez_cmdliner/package.toml

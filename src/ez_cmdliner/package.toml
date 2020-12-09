@@ -1,5 +1,6 @@
 kind = "library"
 name = "ez_cmdliner"
+pack-modules = false
 
 [dependencies]
 ez_subst = ">=0.1"
