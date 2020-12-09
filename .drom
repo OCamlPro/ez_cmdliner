@@ -2,7 +2,7 @@
 
 # hash of toml configuration files
 # used for generation of all files
-7b0dfcf4644209b67c3c74837ec2cb08:.
+dc5bcd019908e791d05975e0e429abf8:.
 # end context for .
 
 # begin context for .github/workflows/ci.ml
@@ -12,12 +12,12 @@ ac2aab1d8f78befbbfca730668f71e8d:.github/workflows/ci.ml
 
 # begin context for .github/workflows/doc-deploy.yml
 # file .github/workflows/doc-deploy.yml
-0ffbdbf52d3eb1c4418a3b58e5b5d8bf:.github/workflows/doc-deploy.yml
+d9d05fdf51c74f24006484bde369930a:.github/workflows/doc-deploy.yml
 # end context for .github/workflows/doc-deploy.yml
 
 # begin context for .github/workflows/workflow.yml
 # file .github/workflows/workflow.yml
-5419ad17668aba85e57d53ac5fa3524c:.github/workflows/workflow.yml
+d3b6d840eeee600d45edf5f173244b94:.github/workflows/workflow.yml
 # end context for .github/workflows/workflow.yml
 
 # begin context for .gitignore
@@ -32,7 +32,7 @@ dd04b06fbab0608278755e299205a67a:.gitignore
 
 # begin context for .ocamlformat-ignore
 # file .ocamlformat-ignore
-5574462426a3706b11f5cbdbb0d4ad91:.ocamlformat-ignore
+597fd0f0e8af60c3142054781798e82d:.ocamlformat-ignore
 # end context for .ocamlformat-ignore
 
 # begin context for .ocp-indent
@@ -52,7 +52,7 @@ cd2db0f959490017730ea41c27e14848:LICENSE.md
 
 # begin context for Makefile
 # file Makefile
-1624511ec72220afd5a54555dd88b04d:Makefile
+32ad0022f2a7d01812d35940cab7a024:Makefile
 # end context for Makefile
 
 # begin context for README.md
@@ -82,7 +82,7 @@ e2ce547e7f7d990e85b1e8643b75060d:docs/doc/index.html
 
 # begin context for docs/index.html
 # file docs/index.html
-a92e46a8d461f70b1eb932d6953a7501:docs/index.html
+d2d6ce926f495c345de09e134ee9f358:docs/index.html
 # end context for docs/index.html
 
 # begin context for docs/sphinx/index.html
@@ -92,8 +92,13 @@ a92e46a8d461f70b1eb932d6953a7501:docs/index.html
 
 # begin context for docs/style.css
 # file docs/style.css
-0085152add896d7bab7b1a744d2a9af7:docs/style.css
+1eb62145308aed80e0f86b959d6f7fd0:docs/style.css
 # end context for docs/style.css
+
+# begin context for dot_gitignore
+# file dot_gitignore
+dd04b06fbab0608278755e299205a67a:dot_gitignore
+# end context for dot_gitignore
 
 # begin context for drom.toml
 # file drom.toml
@@ -107,12 +112,12 @@ df544cfaf9078d1bba2f90ed1b5adf5f:dune
 
 # begin context for dune-project
 # file dune-project
-3ccb2dbb46314ce6c88ea1a1f01e7a36:dune-project
+4138a7353a2d6c19669d9e0b7324cf40:dune-project
 # end context for dune-project
 
 # begin context for ez_cmdliner.opam
 # file ez_cmdliner.opam
-ba2c2c28eaeda37d75a351e7e2f17acf:ez_cmdliner.opam
+7724e633fa0917ddf11ea66fdefaf612:ez_cmdliner.opam
 # end context for ez_cmdliner.opam
 
 # begin context for sphinx/_static/css/fixes.css
@@ -122,37 +127,37 @@ ba2c2c28eaeda37d75a351e7e2f17acf:ez_cmdliner.opam
 
 # begin context for sphinx/about.rst
 # file sphinx/about.rst
-adeede69ea63ccaf675bc6339135798e:sphinx/about.rst
+9cee275c3a3e03e8077f3c9fbd18c457:sphinx/about.rst
 # end context for sphinx/about.rst
 
 # begin context for sphinx/conf.py
 # file sphinx/conf.py
-097bbe0e64f7bd1da4cefd0077b0f7da:sphinx/conf.py
+44516b020e945b50f1106c11b07841f9:sphinx/conf.py
 # end context for sphinx/conf.py
 
 # begin context for sphinx/index.rst
 # file sphinx/index.rst
-ee974184e06223bab8bd7296c59f00ed:sphinx/index.rst
+9295a4512b28b4c048e0182d93b54c34:sphinx/index.rst
 # end context for sphinx/index.rst
 
 # begin context for sphinx/install.rst
 # file sphinx/install.rst
-31bdb498b5dfc7a660a7aac95a0b9b6d:sphinx/install.rst
+f3782e7d076a8dc7c8b1d1910389ea2b:sphinx/install.rst
 # end context for sphinx/install.rst
 
 # begin context for sphinx/license.rst
 # file sphinx/license.rst
-6806c77a1bc925ae3555c37bf02920bf:sphinx/license.rst
+967ef1f00b82e35a295b88d48e90a3af:sphinx/license.rst
 # end context for sphinx/license.rst
 
 # begin context for src/ez_cmdliner/dune
 # file src/ez_cmdliner/dune
-146832b2faeeaabb8dddb969b36e1f23:src/ez_cmdliner/dune
+a6ba171a2bd3b18c6a9f2dec61ff9630:src/ez_cmdliner/dune
 # end context for src/ez_cmdliner/dune
 
 # begin context for src/ez_cmdliner/index.mld
 # file src/ez_cmdliner/index.mld
-659e2964a3bd79a2c9d5d0faa4a6af48:src/ez_cmdliner/index.mld
+257b434deceb88414c59ac2c2a2f53f1:src/ez_cmdliner/index.mld
 # end context for src/ez_cmdliner/index.mld
 
 # begin context for src/ez_cmdliner/package.toml
