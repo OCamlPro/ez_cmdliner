@@ -201,7 +201,7 @@ module V2 : sig
     val raw_info : TYPES.info -> RAWTYPES.info
     val raw_sub : TYPES.sub -> RAWTYPES.sub
 
-    val to_rst : TYPES.sub list -> arg_list -> string
+    val to_rst : ?name:string -> TYPES.sub list -> arg_list -> string
   end
 end
 

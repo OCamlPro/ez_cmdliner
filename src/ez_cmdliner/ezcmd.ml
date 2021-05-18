@@ -347,7 +347,7 @@ module V2 = struct
               Printf.bprintf b "\n%s\n" ( doclang_to_rst ~map par )
           | `Pre code ->
               let code = doclang_to_rst ~map code in
-              Printf.bprintf b "::\n  %s\n"
+              Printf.bprintf b "::\n  \n  %s\n"
                 ( String.concat "\n  "
                     ( EzString.split code '\n' ))
 
@@ -410,7 +410,7 @@ module V2 = struct
 
           ) options
 
-      let to_rst commands common_args =
+      let to_rst ?(name=Sys.argv.(0)) commands common_args =
 
         let commands = List.map raw_sub commands in
 
@@ -445,7 +445,7 @@ Overview of sub-commands::
 
         List.iter (fun cmd ->
 
-            let s = Printf.sprintf "\n\ndrom %s%s" cmd.sub_name
+            let s = Printf.sprintf "\n\n%s %s%s" name cmd.sub_name
                 (match cmd.sub_version with
                  | None -> ""
                  | Some version -> Printf.sprintf " (since version %s)" version)
@@ -465,7 +465,8 @@ Overview of sub-commands::
                 (args, f, raw_info info)) options in
 
 
-            Printf.bprintf b "\n**USAGE**\n::\n  \n  drom %s%s [OPTIONS]\n\n"
+            Printf.bprintf b "\n**USAGE**\n::\n  \n  %s %s%s [OPTIONS]\n\n"
+              name
               cmd.sub_name
               ( String.concat ""
                   ( List.map (function

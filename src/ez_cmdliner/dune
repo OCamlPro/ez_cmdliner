@@ -3,7 +3,7 @@
 (library
   (name ez_cmdliner)
   (public_name ez_cmdliner)
-  (wrapped false)
+  (wrapped true)
   (libraries ocplib_stuff ez_subst cmdliner )
   
   
@@ -12,4 +12,5 @@
 
 (documentation
   (package ez_cmdliner))
+
 
