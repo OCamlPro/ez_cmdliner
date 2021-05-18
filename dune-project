@@ -3,7 +3,7 @@
 (name ez_cmdliner)
 (allow_approximate_merlin)
 (generate_opam_files false)
-(version 0.2.0)
+(version 0.3.0)
 (formatting (enabled_for ocaml reason))
 
 (package
@@ -19,5 +19,6 @@
    ppx_expect
    odoc
    ocamlformat
- ))
+  )
+ )
 
