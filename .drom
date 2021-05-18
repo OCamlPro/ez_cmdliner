@@ -2,7 +2,7 @@
 
 # hash of toml configuration files
 # used for generation of all files
-8879fa665fcff86d6c09ae9332fa118d:.
+2bf1cc39e27e4b8e20b83348957cc909:.
 # end context for .
 
 # begin context for .github/workflows/ci.ml
@@ -12,12 +12,12 @@ ac2aab1d8f78befbbfca730668f71e8d:.github/workflows/ci.ml
 
 # begin context for .github/workflows/doc-deploy.yml
 # file .github/workflows/doc-deploy.yml
-d9d05fdf51c74f24006484bde369930a:.github/workflows/doc-deploy.yml
+c6e012f18db48fb9f4b3e94d344ac5e1:.github/workflows/doc-deploy.yml
 # end context for .github/workflows/doc-deploy.yml
 
 # begin context for .github/workflows/workflow.yml
 # file .github/workflows/workflow.yml
-d3b6d840eeee600d45edf5f173244b94:.github/workflows/workflow.yml
+b6d4d13ad3f9e97b5f8e5b775d822bef:.github/workflows/workflow.yml
 # end context for .github/workflows/workflow.yml
 
 # begin context for .gitignore
@@ -47,12 +47,12 @@ dd04b06fbab0608278755e299205a67a:.gitignore
 
 # begin context for LICENSE.md
 # file LICENSE.md
-cd2db0f959490017730ea41c27e14848:LICENSE.md
+02f5d892afcdc564e5fb067198a06740:LICENSE.md
 # end context for LICENSE.md
 
 # begin context for Makefile
 # file Makefile
-32ad0022f2a7d01812d35940cab7a024:Makefile
+8e92d7d7d69a9e0a11e01a3b7216cbd4:Makefile
 # end context for Makefile
 
 # begin context for README.md
@@ -112,13 +112,28 @@ df544cfaf9078d1bba2f90ed1b5adf5f:dune
 
 # begin context for dune-project
 # file dune-project
-6520c541f519e786dc8731cb7f5ab32e:dune-project
+686420a111ab2ce5718e91106486ec4a:dune-project
 # end context for dune-project
 
 # begin context for ez_cmdliner.opam
 # file ez_cmdliner.opam
-9f512554f33ce6cd6282e179dce99e1e:ez_cmdliner.opam
+8ca862d34e19fb16c790f0c5f51f5518:ez_cmdliner.opam
 # end context for ez_cmdliner.opam
+
+# begin context for scripts/after.sh
+# file scripts/after.sh
+1112fbe7067fce342365a25613b5659d:scripts/after.sh
+# end context for scripts/after.sh
+
+# begin context for scripts/before.sh
+# file scripts/before.sh
+ae050b3099ac0b43d7c7f4295f6b2319:scripts/before.sh
+# end context for scripts/before.sh
+
+# begin context for scripts/copy-bin.sh
+# file scripts/copy-bin.sh
+bb3a9d286f0dc64021db4194427263ee:scripts/copy-bin.sh
+# end context for scripts/copy-bin.sh
 
 # begin context for sphinx/_static/css/fixes.css
 # file sphinx/_static/css/fixes.css
@@ -147,12 +162,12 @@ f3782e7d076a8dc7c8b1d1910389ea2b:sphinx/install.rst
 
 # begin context for sphinx/license.rst
 # file sphinx/license.rst
-967ef1f00b82e35a295b88d48e90a3af:sphinx/license.rst
+8d984cbb854fe94fc5fa77b97b6ee046:sphinx/license.rst
 # end context for sphinx/license.rst
 
 # begin context for src/ez_cmdliner/dune
 # file src/ez_cmdliner/dune
-146832b2faeeaabb8dddb969b36e1f23:src/ez_cmdliner/dune
+f418052d97d4ee287e0553d40c02db0b:src/ez_cmdliner/dune
 # end context for src/ez_cmdliner/dune
 
 # begin context for src/ez_cmdliner/index.mld
