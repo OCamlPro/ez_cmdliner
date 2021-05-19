@@ -347,7 +347,7 @@ module V2 = struct
               Printf.bprintf b "\n%s\n" ( doclang_to_rst ~map par )
           | `Pre code ->
               let code = doclang_to_rst ~map code in
-              Printf.bprintf b "::\n  %s\n"
+              Printf.bprintf b "::\n\n  %s\n\n"
                 ( String.concat "\n  "
                     ( EzString.split code '\n' ))
 
