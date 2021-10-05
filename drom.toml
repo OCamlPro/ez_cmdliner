@@ -3,19 +3,17 @@ drom-version = "0.1"
 
 [project]
 authors = ["Fabrice Le Fessant <fabrice.le_fessant@ocamlpro.com>"]
+ci-systems = ["ubuntu-latest", "macos-latest", "windows-latest"]
 copyright = "OCamlPro SAS"
 edition = "4.10.0"
 github-organization = "ocamlpro"
 license = "LGPL2"
 min-edition = "4.07.0"
-mode = "binary"
 name = "ez_cmdliner"
 synopsis = "Easy interface to Cmdliner à la Arg.parse with sub-commands"
-version = "0.3.0"
-windows-ci = true
+version = "0.4.0"
 
 # keys that you could also define:
-# build-profile = "...build-profile..."
 # odoc-target = "...odoc-target..."
 # sphinx-target = "...sphinx-target..."
 # archive = "...archive..."
@@ -26,17 +24,18 @@ windows-ci = true
 # homepage = "...homepage..."
 
 [project]
-description = """
-ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
+description = """ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
 à la Arg.parse with an extension for simple sub-commands.
 """
 
-[drom]
-skip = "CHANGES.md src/ez_cmdliner/main.ml test/output-tests/dune test/output-tests/test1.expected test/output-tests/test2.expected test/output-tests/test2.ml"
+[project]
+skip = ["CHANGES.md", "src/ez_cmdliner/main.ml", "test/output-tests/dune", "test/output-tests/test1.expected", "test/output-tests/test2.expected", "test/output-tests/test2.ml"]
 
+# project-wide library dependencies (not for package-specific deps)
 [dependencies]
 cmdliner = "1.0.0"
 
+# project-wide tools dependencies (not for package-specific deps)
 [tools.ocamlformat]
 for-test = true
 [tools.odoc]
@@ -47,12 +46,28 @@ for-test = true
 for-test = true
 
 [project]
-generators = ["ocamllex", "ocamlyacc"]
-pack-modules = false
-share-dirs = ["share"]
+
+# dirs to skip while scanning for dune files
 skip-dirs = []
 
+# dirs to scan for share/ folders (with package names)
+share-dirs = ["share"]
+
+# build profile to use by default
+# build-profile = ...
+
+# Profile options for this project
+#    [profile]
+#    dev = { ocaml-flags = "-w +a-4-40-41-42-44" }
+#    release = { ocaml-flags = "-w -a" }
+[profile]
+# ...
+
+# project-wide fields (depends on project skeleton)
+[fields]
+# ...
 
 [[package]]
 dir = "src/ez_cmdliner"
+# edit 'src/ez_cmdliner/package.toml' for package-specific options
 
