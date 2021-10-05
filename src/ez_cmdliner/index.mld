@@ -5,6 +5,5 @@ ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
 
 
 
-This library exposes the following toplevel modules:
-{!modules:Ezcmd}
+The entry point of this library is the module: {!Ezcmd}.
 
