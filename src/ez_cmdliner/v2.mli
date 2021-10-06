@@ -303,7 +303,22 @@ v}
     val main :
       ?on_error:(unit -> unit) ->
       ?print_config:(unit -> unit) ->
-      sub list -> unit
+      ?common_args:(string list * spec * info) list ->
+      ?argv:string array ->
+      sub list ->
+      unit
+      (** [main ?on_error ?print_config ?common_args ?argv subcommands]
+          parse arguments and execute corresponding subcommands.
+          {ul
+          {- [subcommands]: multi-level subcommands. Multiple keywords are
+          separated by spaces within the subcommand name. }
+          {- [?on_error]: function called when an exception is raised.}
+          {- [?print_config]: function called when no sub-command is provided.}
+          {- [?common_args]: additional common arguments (common to all
+          subcommands). [-v|--verbose|-q|--quiet] are always included.}
+          {- [?argv]: list of arguments used instead of [Sys.argv].}
+          }
+      *)
 
   end
 
