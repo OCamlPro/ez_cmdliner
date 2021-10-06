@@ -92,6 +92,7 @@ module EZCMD : sig
       sub_doc : string;
     }
 
+    (* deprecated, do not use type [command]. Only for backward compatibility *)
     type command = {
       cmd_name : string;
       cmd_action : unit -> unit;
@@ -104,9 +105,20 @@ module EZCMD : sig
 
   open TYPES
 
+  (** {1 Specification of Arguments}*)
+
+      (** Type [spec] specifies kinds and actions for every
+        argument. It is close to the [Arg.spec] type in the standard
+        library.  One main difference with [Arg.spec] is that these
+        arguments should only appear once on the command-line,
+        otherwise [cmdliner] is going to complain.
+
+        Anonymous arguments are treated a bit differently.  [Anon(n,f)]
+        means the anonymous argument at position [n] (starting from
+        position 0). [Anons f] means all the anonymous arguments,
+        provided as a list of strings to [f].
+    *)
   type spec = Arg.spec =
-    (* Same as Arg. But they should only appear at most once on the
-       command-line, or Cmdliner will complain. *)
     | Unit of (unit -> unit)
     | Bool of (bool -> unit)
     | Set_bool of bool ref
@@ -120,32 +132,11 @@ module EZCMD : sig
     | Set_float of float ref
     | Symbol of string list * (string -> unit)
     | File of (string -> unit)
-    (* Anonymous arguments. `Anon(n,f)` means the anonymous argument
-       at position `n`. `Anons f` means all the anonymous arguments. *)
     | Anon of int * (string -> unit)
     | Anons of (string list -> unit)
 
-  module MANPAGE = Cmdliner.Manpage
-
-  (* Partial Compatibility with Stdlib Arg module *)
-  val parse :
-    ?name:string ->
-    ?version:string ->
-    ?man:block list ->
-    (string * Arg.spec * string) list ->
-    (string -> unit) ->
-    string ->
-    unit
-
-  val translate :
-    ?docs:string ->
-    (string * Arg.spec * string) list ->
-    (string list * Arg.spec * info) list
-
-  val translate_anon : (string -> unit) -> (string list * Arg.spec * info) list
-
   val env : ?docs:string -> ?doc:string -> string -> env
-  (** [env ~docs ~doc var] describes an environment variable
+  (** [EZCMD.env ~docs ~doc var] describes an environment variable
         [var]. [doc] is the man page information of the environment
         variable, defaults to ["undocumented"]. [docs] is the title of
         the man page section in which the environment variable will be
@@ -160,7 +151,7 @@ module EZCMD : sig
   val info : ?docs:string -> ?docv:string -> ?env:env -> ?version: string ->
     string -> (* doc *)
     info
-  (** [info docs docv env doc] defines information for
+  (** [EZCMD.info docs docv env doc] defines information for
         an argument.
         {ul
         {- [env] defines the name of an environment variable which is
@@ -193,10 +184,20 @@ module EZCMD : sig
     ?version:string -> (* exists since *)
     (unit -> unit) ->
     sub
-  (** [sub name action] associates the action [action] with the
+  (** [EZCMD.sub name action] associates the action [action] with the
      subcommand [name]. This module supports only one level of
      sub-commands, unless you are using the [MAKE] functor. With the
      [MAKE] functor, subcommand names can contain spaces. *)
+
+  (** {1 [main] functions} *)
+
+  val main :
+    ?version:string ->
+    ?argv: string array ->
+    sub -> unit
+  (** [EZCMD.main sub] can be used when there is only one command in
+     the executable. Arguments are defined in the sub-command
+     definition. *)
 
   val main_with_subcommands :
     name:string ->
@@ -211,64 +212,31 @@ module EZCMD : sig
     ?argv: string array ->
     sub list ->
     unit
+  (** [EZCMD.main_with_subcommands ~name ~doc subcommands] parses the
+     arguments and calls the action of the selected sub-command. *)
 
-  val main :
-    ?version:string ->
-    ?argv: string array ->
-    sub -> unit
-
-  module RAWTYPES = TYPES
-
-  val raw_env : TYPES.env -> RAWTYPES.env
-  val raw_info : TYPES.info -> RAWTYPES.info
-  val raw_sub : TYPES.sub -> RAWTYPES.sub
-
-  val to_rst : ?name:string -> TYPES.sub list -> arg_list -> string
-
-
-
-  module MAKE( M : sig
-
-      (* command name *)
-      val command : string
-
-      (* current version *)
-      val version : string
-
-      (* printed when user calls with --about *)
-      val about : string
-
-      (* printed by cmdliner for doc *)
-      val usage : string
-
-      (* If this env variable is set, a backtrace will be generated on errors *)
-      val backtrace_var : string option
-
-      (* manipulate verbosity *)
-      val get_verbosity : unit -> int
-      val set_verbosity : int -> unit
-
-      (* standard error: no backtrace is printed unless the backtrace_var
-         env variable is defined. *)
-      exception Error of string
-
-    end ) : sig
 
   (**
-    This is the main function. It will dispatch on the subcommand called
-    by the user.
+     {1 Multi-level subcommands}
+
+    The functor [MAKE] can be used to define a [main] function, supporting
+     multi-level sub-commands.
 
     It takes a list of subcommands, defined for example with:
 
 {v
 open Ezcmd.V2
 
-let cmd =
+module MAIN = EZCMD.MAKE(struct
+   ...
+end)
+
+let cmd1 = (* define one sub-command *)
   let files = ref [] in
   EZCMD.sub
-    "parse this file"
+    "parse this file" (* with spaces !! *)
     (fun () ->
-     ... (* action to perform after parsing options *)
+     ... (* action to perform after parsing options of the sub-command *)
     )
     ~args:
       [
@@ -287,18 +255,50 @@ let cmd =
         `P "..."
       ];
     ]
+let cmd2 = ...
+let cmd3 = ...
 
-let () = main [ cmd ]
+let () = MAIN.main [ cmd1 ; cmd2 ; cmd3 ]
 v}
 
-    default options:
-     -v | --verbose : increase verbosity and backtraces
-     -q | --quiet : set verbosity to 0
-     --version : print M.version
-     --about : print M.about
-     --echo : print command with current arguments
-     rst : output a .rst file with all subcommands
+    Default options provided by this functor:
+     {ul
+     {- [-v] | [--verbose] : increase verbosity and backtraces}
+     {- [-q] | [--quiet] : set verbosity to 0}
+     {- [--version] : print M.version}
+     {- [--about] : print M.about}
+     {- [--echo] : print command with current arguments}
+     {- [rst] : output a .rst file with all subcommands}
+     }
   *)
+
+  module MAKE( M : sig
+
+      (** command name *)
+      val command : string
+
+      (** current version *)
+      val version : string
+
+      (** printed when user calls with --about *)
+      val about : string
+
+      (** printed by cmdliner for doc *)
+      val usage : string
+
+      (** If this env variable is set, a backtrace will be generated
+         on errors *)
+      val backtrace_var : string option
+
+      (** manipulate verbosity *)
+      val get_verbosity : unit -> int
+      val set_verbosity : int -> unit
+
+      (** standard error: no backtrace is printed unless the backtrace_var
+         env variable is defined. *)
+      exception Error of string
+
+    end ) : sig
 
     val main :
       ?on_error:(unit -> unit) ->
@@ -306,6 +306,45 @@ v}
       sub list -> unit
 
   end
+
+
+  module MANPAGE = Cmdliner.Manpage
+
+  (** {1 Compatibility with Stdlib Arg} *)
+
+  (** [EZCMD.parse] is mostly equivalent to Stdlib [Arg.parse] *)
+  val parse :
+    ?name:string ->
+    ?version:string ->
+    ?man:block list ->
+    (string * Arg.spec * string) list ->
+    (string -> unit) ->
+    string ->
+    unit
+
+  (** [EZCMD.translate args] can be used to provide a list of arguments,
+      à la [Arg.parse], to other [EZCMD] commands. *)
+  val translate :
+    ?docs:string ->
+    (string * Arg.spec * string) list ->
+    (string list * Arg.spec * info) list
+
+  (** [EZCMD.translate_anon f] returns a specification that will call [f]
+      on every anonymous argument. *)
+  val translate_anon : (string -> unit) -> (string list * Arg.spec * info) list
+
+
+  val to_rst : ?name:string -> TYPES.sub list -> arg_list -> string
+
+  (** {1 Deprecated} *)
+
+  module RAWTYPES = TYPES
+
+  val raw_env : TYPES.env -> RAWTYPES.env
+  val raw_info : TYPES.info -> RAWTYPES.info
+  val raw_sub : TYPES.sub -> RAWTYPES.sub
+
+
 
 
 end

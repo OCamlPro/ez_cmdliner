@@ -3,7 +3,6 @@
 ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
 à la Arg.parse with an extension for simple sub-commands.
 
-
-
-The entry point of this library is the module: {!Ezcmd}.
-
+The entry point of this library is the module: {!Ezcmd}, but for the
+lastest version of the interface, you should directly chez
+{!Ezcmd.V2.EZCMD}.
