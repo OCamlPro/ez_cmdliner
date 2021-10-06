@@ -1,5 +1,5 @@
 
-[![Actions Status](https://github.com/ocamlpro/ez_cmdliner/workflows/Main%20Workflow/badge.svg)](https://github.com/ocamlpro/ez_cmdliner/actions)[![Actions Status](https://github.com/ocamlpro/ez_cmdliner/workflows/doc-deploy/badge.svg)](https://github.com/ocamlpro/ez_cmdliner/actions)
+[![Actions Status](https://github.com/ocamlpro/ez_cmdliner/workflows/Main%20Workflow/badge.svg)](https://github.com/ocamlpro/ez_cmdliner/actions)
 [![Release](https://img.shields.io/github/release/ocamlpro/ez_cmdliner.svg)](https://github.com/ocamlpro/ez_cmdliner/releases)
 
 # ez_cmdliner
