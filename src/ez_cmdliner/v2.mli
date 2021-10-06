@@ -142,7 +142,7 @@ module EZCMD : sig
         the man page section in which the environment variable will be
         listed, it defaults to {!Manpage.s_environment}.
 
-        In [doc] the {{!doclang}documentation markup language} can be
+        In [doc] the {{: https://erratique.ch/software/cmdliner/doc/Cmdliner.html#doclang}documentation markup language} can be
         used with following variables:
         {ul
         {- [$(env)], the value of [var].}
@@ -159,7 +159,7 @@ module EZCMD : sig
            command line. See {{!envlookup}environment variables} for
            details.}
         {- [doc] is the man page information of the argument.
-           The {{!doclang}documentation language} can be used and
+           The {{: https://erratique.ch/software/cmdliner/doc/Cmdliner.html#doclang}documentation language} can be used and
            the following variables are recognized:
            {ul
            {- ["$(docv)"] the value of [docv] (see below).}
