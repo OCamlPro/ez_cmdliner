@@ -10,14 +10,9 @@
 ac2aab1d8f78befbbfca730668f71e8d:.github/workflows/ci.ml
 # end context for .github/workflows/ci.ml
 
-# begin context for .github/workflows/doc-deploy.yml
-# file .github/workflows/doc-deploy.yml
-5217288d07e719b09e787f259a8f48f2:.github/workflows/doc-deploy.yml
-# end context for .github/workflows/doc-deploy.yml
-
 # begin context for .github/workflows/workflow.yml
 # file .github/workflows/workflow.yml
-8e789c85215481fc5534ae06fb8d7ee6:.github/workflows/workflow.yml
+fa5fc482f66c5c0281662ef712fe791f:.github/workflows/workflow.yml
 # end context for .github/workflows/workflow.yml
 
 # begin context for .gitignore
