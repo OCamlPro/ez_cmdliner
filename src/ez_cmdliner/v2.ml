@@ -501,14 +501,7 @@ Overview of sub-commands::
          env variable is defined. *)
       exception Error of string
 
-    end ) : sig
-
-    val main :
-      ?on_error:(unit -> unit) ->
-      ?print_config:(unit -> unit) ->
-      sub list -> unit
-
-  end = struct
+    end ) = struct
 
     type cmd_node =
       {
@@ -543,6 +536,8 @@ Overview of sub-commands::
     let main
         ?(on_error = (fun () -> ()) )
         ?(print_config = (fun () -> ()) )
+        ?(common_args = [])
+        ?(argv = Sys.argv)
         subcommands =
 
       Printexc.record_backtrace !backtrace;
@@ -585,9 +580,9 @@ Overview of sub-commands::
           [ "q"; "quiet" ],
           Unit (fun () -> M.set_verbosity 0),
           info "Set verbosity level to 0";
-        ]
+        ] @ common_args
       in
-      let args = Array.to_list Sys.argv in
+      let args = Array.to_list argv in
 
       let get_commands = function
         | Some (map, commands) -> (map, commands)
@@ -600,7 +595,19 @@ Overview of sub-commands::
             (map,commands)
       in
 
-      let rec iter_initial_args path
+      let common_args_map = ref StringMap.empty in
+      List.iter (fun (args, kind, _) ->
+          List.iter (fun arg ->
+              let arg = if String.length arg = 1 then
+                  "-" ^ arg
+                else
+                  "--" ^ arg
+              in
+              common_args_map := StringMap.add arg kind !common_args_map
+            ) args
+        ) common_args ;
+
+      let rec iter_initial_args path pre_args
           ( commands : (cmd_node StringMap.t * sub list ) option ) args =
         match args with
         | [] ->
@@ -613,40 +620,75 @@ Overview of sub-commands::
                   exit 0
               | _ ->
                   let _map, commands = get_commands commands in
-                  path, args, commands
+                  path, List.rev pre_args @ args, commands
             end
         | "--echo" :: args ->
             echo () ;
-            iter_initial_args path commands args
+            iter_initial_args path pre_args commands args
         | [ "--version" ] ->
             Printf.printf "%s\n%!" M.version;
             exit 0
         | [ "--about" ] ->
             Printf.printf "%s\n%!" M.about;
             exit 0
-        | ( "-v" | "--verbose" ) :: args ->
-            increase_verbosity ();
-            iter_initial_args path commands args
-        | ( "-q" | "--quiet" ) :: args ->
-            M.set_verbosity 0;
-            iter_initial_args path commands args
-        | [ "rst" ] ->
+        | [ "rst" ] | [ "--rst" ] ->
             let _map, commands = get_commands commands in
             Printf.printf "%s%!" ( to_rst commands common_args );
             exit 0
+        | ( "-v" | "--verbose" ) :: args ->
+            increase_verbosity ();
+            iter_initial_args path pre_args commands args
+        | ( "-q" | "--quiet" ) :: args ->
+            M.set_verbosity 0;
+            iter_initial_args path pre_args commands args
         | name :: rem_args ->
-            let map, commands = get_commands commands in
-            match StringMap.find name map with
-            | exception Not_found -> path, args, commands
-            | node ->
-                iter_initial_args
-                  ( name :: path )
-                  ( Some (! (node.node_map) , node.node_commands ))
-                  rem_args
+            match StringMap.find name !common_args_map with
+            | kind ->
+                let pre_args = name :: pre_args in
+                let pre_args, rem_args = match kind with
+                  | Anon _
+                  | Anons _
+                    ->
+                      assert false
+                  | Set _
+                  | Unit _
+                  | Bool _
+                  | Set_bool _
+                  | Clear _
+                  | Symbol _ (* TODO: check *)
+                    -> pre_args, rem_args
+                  | String _
+                  | Set_string _
+                  | Int _
+                  | Set_int _
+                  | Float _
+                  | Set_float _
+                  | File _
+                    ->
+                      match rem_args with
+                      | [] ->
+                          Printf.eprintf
+                            "Error: argument %S expects an argument\n%!" name;
+                          exit 2
+                      | arg :: rem_args ->
+                          arg :: pre_args, rem_args
+                in
+                iter_initial_args path pre_args commands rem_args
+            | exception Not_found ->
+                let map, commands = get_commands commands in
+                match StringMap.find name map with
+                | exception Not_found ->
+                    path, List.rev pre_args @ args, commands
+                | node ->
+                    iter_initial_args
+                      ( name :: path )
+                      pre_args
+                      ( Some (! (node.node_map) , node.node_commands ))
+                      rem_args
       in
 
       let path, args, ez_commands =
-        iter_initial_args [] None (List.tl args ) in
+        iter_initial_args [] [] None (List.tl args ) in
       let args = match path with
         | [] -> args
         | path -> ( String.concat " " (List.rev path) ) :: args
