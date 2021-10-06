@@ -39,7 +39,7 @@ pack = "Ezcmd"
 # preprocess = "pps ppx_deriving_encoding"
 
 # files to skip while updating at package level
-# skip = []
+skip = [ "index.mld" ]
 
 # package library dependencies
 #   [dependencies]

@@ -5,7 +5,7 @@ name: "ez_cmdliner"
 version: "0.4.0"
 license: "LGPL-2.1-only with OCaml-LGPL-linking-exception"
 synopsis: "Easy interface to Cmdliner à la Arg.parse with sub-commands"
-description: """
+description: """\
 ez_cmdliner is a simple layer on top of Cmdliner to provide an interface
 à la Arg.parse with an extension for simple sub-commands.
 """

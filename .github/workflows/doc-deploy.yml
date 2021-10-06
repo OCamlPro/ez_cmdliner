@@ -18,11 +18,11 @@ jobs:
         id: cache-opam
         with:
           path: ~/.opam
-          key: v2-Linux-ez_cmdliner-4.10.0-${{ hashFiles('*.opam') }}
+          key: v1-Linux-ez_cmdliner-4.10.0-${{ hashFiles('*.opam') }}
       - name: setup-ocaml
-        uses: avsm/setup-ocaml@v2
+        uses: avsm/setup-ocaml@v1
         with:
-          ocaml-compiler: 4.10.0
+          ocaml-version: 4.10.0
       - name: setup-doc
         run: |
           sudo apt install -yqq python3-sphinx python3-sphinx-rtd-theme
