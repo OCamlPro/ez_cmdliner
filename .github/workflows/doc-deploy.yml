@@ -18,7 +18,7 @@ jobs:
         id: cache-opam
         with:
           path: ~/.opam
-          key: v1-Linux-ez_cmdliner-4.10.0-${{ hashFiles('*.opam') }}
+          key: v2-Linux-ez_cmdliner-4.10.0-${{ hashFiles('*.opam') }}
       - name: setup-ocaml
         uses: avsm/setup-ocaml@v2
         with:
