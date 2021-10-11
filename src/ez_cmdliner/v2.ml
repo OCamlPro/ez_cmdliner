@@ -535,6 +535,7 @@ Overview of sub-commands::
 
     let main
         ?(on_error = (fun () -> ()) )
+        ?(on_exit = (fun () -> ()) )
         ?(print_config = (fun () -> ()) )
         ?(common_args = [])
         ?(argv = Sys.argv)
@@ -704,7 +705,8 @@ Overview of sub-commands::
                 ~doc:M.usage
                 ~man:[] ~argv ez_commands
                 ~common_args;
-        end
+        end;
+        on_exit ()
       with
       | M.Error s when not !backtrace ->
           on_error () ;

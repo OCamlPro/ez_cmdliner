@@ -142,7 +142,7 @@ module EZCMD : sig
         the man page section in which the environment variable will be
         listed, it defaults to {!Manpage.s_environment}.
 
-        In [doc] the {{!doclang}documentation markup language} can be
+        In [doc] the {{: https://erratique.ch/software/cmdliner/doc/Cmdliner.html#doclang}documentation markup language} can be
         used with following variables:
         {ul
         {- [$(env)], the value of [var].}
@@ -159,7 +159,7 @@ module EZCMD : sig
            command line. See {{!envlookup}environment variables} for
            details.}
         {- [doc] is the man page information of the argument.
-           The {{!doclang}documentation language} can be used and
+           The {{: https://erratique.ch/software/cmdliner/doc/Cmdliner.html#doclang}documentation language} can be used and
            the following variables are recognized:
            {ul
            {- ["$(docv)"] the value of [docv] (see below).}
@@ -302,6 +302,7 @@ v}
 
     val main :
       ?on_error:(unit -> unit) ->
+      ?on_exit:(unit -> unit) ->
       ?print_config:(unit -> unit) ->
       ?common_args:(string list * spec * info) list ->
       ?argv:string array ->
@@ -313,6 +314,7 @@ v}
           {- [subcommands]: multi-level subcommands. Multiple keywords are
           separated by spaces within the subcommand name. }
           {- [?on_error]: function called when an exception is raised.}
+          {- [?on_exit]: function called on exit when no exception is raised.}
           {- [?print_config]: function called when no sub-command is provided.}
           {- [?common_args]: additional common arguments (common to all
           subcommands). [-v|--verbose|-q|--quiet] are always included.}
