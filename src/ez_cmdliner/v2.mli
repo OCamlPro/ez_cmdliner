@@ -302,6 +302,7 @@ v}
 
     val main :
       ?on_error:(unit -> unit) ->
+      ?on_exit:(unit -> unit) ->
       ?print_config:(unit -> unit) ->
       ?common_args:(string list * spec * info) list ->
       ?argv:string array ->
@@ -313,6 +314,7 @@ v}
           {- [subcommands]: multi-level subcommands. Multiple keywords are
           separated by spaces within the subcommand name. }
           {- [?on_error]: function called when an exception is raised.}
+          {- [?on_exit]: function called on exit when no exception is raised.}
           {- [?print_config]: function called when no sub-command is provided.}
           {- [?common_args]: additional common arguments (common to all
           subcommands). [-v|--verbose|-q|--quiet] are always included.}
