@@ -116,7 +116,7 @@ module EZCMD = struct
           let env = match info.arg_env with
             | None -> None
             | Some env -> Some (
-                Term.env_info
+                Cmd.Env.info
                   ?docs:env.env_docs
                   ?doc:env.env_doc
                   env.env_var) in
@@ -190,7 +190,7 @@ module EZCMD = struct
             let f () x = f x in
             Term.(const f $ x $ term) )
 
-  let cmd_exits = Term.default_exits
+  let cmd_exits = Cmd.Exit.defaults
 
   let sub sub_name ~doc ?(args = []) ?(man = []) ?version sub_action =
     { sub_name ;
@@ -207,7 +207,7 @@ module EZCMD = struct
     let doc = sub.sub_doc in
     let args = common_args @ sub.sub_args in
     ( Term.(const sub.sub_action $ term_of_list args),
-      Term.info sub.sub_name ?version ~doc ~sdocs:Manpage.s_common_options ~exits
+      Cmd.info sub.sub_name ?version ~doc ~sdocs:Manpage.s_common_options ~exits
         ~man )
 
   let help more_topics man_format cmds topic =
@@ -242,36 +242,42 @@ module EZCMD = struct
       ]
     in
     ( Term.(ret (const (help topics) $ Arg.man_format $ Term.choice_names $ topic)),
-      Term.info "help" ~doc ~exits:Term.default_exits ~man )
+      Cmd.info "help" ~doc ~exits:Cmd.Exit.defaults ~man )
 
-  let default_cmd ~name ?version ~doc ~man =
+  let default_cmd ?version ~doc ~man name =
     let sdocs = Manpage.s_common_options in
-    let exits = Term.default_exits in
+    let exits = Cmd.Exit.defaults in
     ( Term.(ret (const (`Help (`Pager, None)))),
-      Term.info name ?version ~doc ~sdocs ~exits ~man )
+      Cmd.info name ?version ~doc ~sdocs ~exits ~man )
+
+  let to_cmd (t, info) = Cmd.v info t
 
   let main_with_subcommands ~name ?version ?default ~doc ?(man=[]) ?(topics = []) ?(common_args=[]) ?argv subs
     =
     let cmds = List.map (create_sub ?version ~common_args) subs in
     let default_cmd =
       match default with
-      | None -> default_cmd ~name ?version ~doc ~man
+      | None -> default_cmd name ?version ~doc ~man
       | Some cmd -> create_sub ?version cmd ~common_args
     in
     let cmds =
       if List.exists (fun cmd -> cmd.sub_name = "help") subs then cmds
       else cmds @ [ help_cmd ~name ~man ~topics ]
     in
-    match Term.eval_choice ~catch:false default_cmd ?argv cmds with
-    | `Ok () -> ()
-    | t -> Term.exit t
+    let code = Cmd.eval ~catch:false  ?argv
+        ( Cmd.group ~default:(fst default_cmd)
+            ( snd default_cmd )
+            ( List.map to_cmd cmds ) ) in
+    if code = Cmd.Exit.ok then ()
+    else
+      exit code
 
   let main ?version ?argv cmd =
     let cmd = create_sub ?version cmd ~common_args:[] in
-    match Term.eval ~catch:false ?argv cmd with
-    | `Ok () -> ()
-    | `Error `Parse -> print_endline "toto"
-    | t -> Term.exit t
+    let code = Cmd.eval ~catch:false ?argv ( to_cmd cmd ) in
+    if code = Cmd.Exit.ok then ()
+    else
+      exit code
 
   module MANPAGE = Cmdliner.Manpage
 
