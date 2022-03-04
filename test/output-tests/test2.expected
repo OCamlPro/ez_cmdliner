@@ -2,27 +2,27 @@ NAME
        cop - a generic build system
 
 SYNOPSIS
-       cop COMMAND ...
+       cop [COMMAND] …
 
        Hello
 
 COMMANDS
-       help
+       help [--man-format=FMT] [OPTION]… [TOPIC]
            display help about cop and cop commands
 
-       init
+       init [--repodir=DIR] [OPTION]… 
            make the current directory a repository
 
-       record
+       record [OPTION]… [FILE or DIR]…
            create a patch from unrecorded changes
 
 COMMON OPTIONS
        These options are common to all commands.
 
        --help[=FMT] (default=auto)
-           Show this help in format FMT. The value FMT must be one of `auto',
-           `pager', `groff' or `plain'. With `auto', the format is `pager` or
-           `plain' whenever the TERM env var is `dumb' or undefined.
+           Show this help in format FMT. The value FMT must be one of auto,
+           pager, groff or plain. With auto, the format is pager or plain
+           whenever the TERM env var is dumb or undefined.
 
        --version
            Show version information.
@@ -36,6 +36,8 @@ EXIT STATUS
        cop exits with the following status:
 
        0   on success.
+
+       123 on indiscriminate errors reported on standard error.
 
        124 on command line parsing errors.
 
