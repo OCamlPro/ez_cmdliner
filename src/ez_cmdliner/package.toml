@@ -48,6 +48,7 @@ skip = [ "index.mld" ]
 [dependencies]
 ez_subst = ">=0.1"
 ocplib_stuff = ">=0.3"
+cmdliner = "1.1.0"
 
 # package tools dependencies
 [tools]

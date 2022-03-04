@@ -1,8 +1,11 @@
 # Keep this file in your GIT repo to help drom track generated files
+# begin version
+version:0.6.0~dev
+# end version
 
 # hash of toml configuration files
 # used for generation of all files
-7af74c45e2c4905b3c76abcc8b420048:.
+429172b9eda217ba6864c268313974da:.
 # end context for .
 
 # begin context for .github/workflows/ci.ml
@@ -12,12 +15,12 @@ ac2aab1d8f78befbbfca730668f71e8d:.github/workflows/ci.ml
 
 # begin context for .github/workflows/workflow.yml
 # file .github/workflows/workflow.yml
-aa47ddcd6f1d1c6edd88d5e424f4878b:.github/workflows/workflow.yml
+696499bfb695645d797ffa8299538b59:.github/workflows/workflow.yml
 # end context for .github/workflows/workflow.yml
 
 # begin context for .gitignore
 # file .gitignore
-dd04b06fbab0608278755e299205a67a:.gitignore
+4fbab3b9cc53d400585f1f8b93288bfe:.gitignore
 # end context for .gitignore
 
 # begin context for .ocamlformat
@@ -42,7 +45,7 @@ dd04b06fbab0608278755e299205a67a:.gitignore
 
 # begin context for LICENSE.md
 # file LICENSE.md
-02f5d892afcdc564e5fb067198a06740:LICENSE.md
+3e8c72433d2b8531f0e9716ab0e5fc8a:LICENSE.md
 # end context for LICENSE.md
 
 # begin context for Makefile
@@ -107,13 +110,13 @@ df544cfaf9078d1bba2f90ed1b5adf5f:dune
 
 # begin context for dune-project
 # file dune-project
-b464590b585b326fc480bb0e0cf942da:dune-project
+6355761bbf2ed6c934aec666b9caaaf9:dune-project
 # end context for dune-project
 
-# begin context for ez_cmdliner.opam
-# file ez_cmdliner.opam
-800e0dcf8dc94e3958dc89f79430e006:ez_cmdliner.opam
-# end context for ez_cmdliner.opam
+# begin context for opam/ez_cmdliner.opam
+# file opam/ez_cmdliner.opam
+d8afae358fa632cf8e5e47095ab32bc6:opam/ez_cmdliner.opam
+# end context for opam/ez_cmdliner.opam
 
 # begin context for scripts/after.sh
 # file scripts/after.sh
@@ -157,7 +160,7 @@ f3782e7d076a8dc7c8b1d1910389ea2b:sphinx/install.rst
 
 # begin context for sphinx/license.rst
 # file sphinx/license.rst
-8d984cbb854fe94fc5fa77b97b6ee046:sphinx/license.rst
+abc6ae223dbcd2a710665e948f370518:sphinx/license.rst
 # end context for sphinx/license.rst
 
 # begin context for src/ez_cmdliner/dune
