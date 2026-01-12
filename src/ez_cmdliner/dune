@@ -4,7 +4,7 @@
   (name ezcmd)
   (public_name ez_cmdliner)
   (wrapped true)
-  (libraries ocplib_stuff ez_subst cmdliner )
+  (libraries ocplib_stuff ez_subst cmdliner re)
   
   
   )

@@ -336,32 +336,30 @@ module EZCMD = struct
     let indent_lines ?(prefix="  ") s =
       String.concat ("\n" ^ prefix) (EzString.split s '\n')
 
-    (* Replace all occurrences of [sub] with [by] in string [s] *)
-    let replace_all s ~sub ~by =
-      let len_sub = String.length sub in
-      if len_sub = 0 then s
-      else
-        let b = Buffer.create (String.length s) in
-        let rec loop i =
-          if i > String.length s - len_sub then
-            Buffer.add_substring b s i (String.length s - i)
-          else if String.sub s i len_sub = sub then begin
-            Buffer.add_string b by;
-            loop (i + len_sub)
-          end else begin
-            Buffer.add_char b s.[i];
-            loop (i + 1)
-          end
-        in
-        loop 0;
-        Buffer.contents b
+    (* Placeholders for intentional RST formatting to avoid escaping them *)
+    let bold_start = "\x00B\x00"
+    let bold_end = "\x00/B\x00"
+    let italic_start = "\x00I\x00"
+    let italic_end = "\x00/I\x00"
+
+    (* Regex matching all placeholders, compiled once *)
+    let placeholder_re = Re.compile (Re.alt [
+      Re.str bold_start;
+      Re.str bold_end;
+      Re.str italic_start;
+      Re.str italic_end;
+    ])
+
+    (* Replace all RST format placeholders in a single pass *)
+    let replace_placeholders s =
+      Re.replace placeholder_re s ~f:(fun g ->
+        match Re.Group.get g 0 with
+        | p when p = bold_start || p = bold_end -> "**"
+        | p when p = italic_start || p = italic_end -> "*"
+        | _ -> ""
+      )
 
     let doclang_to_rst ?(map= StringMap.empty) s =
-      (* Use placeholders for intentional RST formatting to avoid escaping them *)
-      let bold_start = "\x00B\x00" in
-      let bold_end = "\x00/B\x00" in
-      let italic_start = "\x00I\x00" in
-      let italic_end = "\x00/I\x00" in
       let paren map s =
         match StringMap.find s map with
         | s -> s
@@ -375,12 +373,8 @@ module EZCMD = struct
                     s
       in
       let result = EZ_SUBST.string ~paren:paren ~ctxt:map s in
-      (* Escape RST special chars, then restore placeholders *)
-      let escaped = escape_rst result in
-      let escaped = replace_all escaped ~sub:bold_start ~by:"**" in
-      let escaped = replace_all escaped ~sub:bold_end ~by:"**" in
-      let escaped = replace_all escaped ~sub:italic_start ~by:"*" in
-      replace_all escaped ~sub:italic_end ~by:"*"
+      (* Escape RST special chars, then restore placeholders in a single pass *)
+      escape_rst result |> replace_placeholders
 
     let man_to_rst ?(map = StringMap.empty) ( man : block list ) =
       let b = Buffer.create 1000 in
