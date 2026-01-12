@@ -569,7 +569,11 @@ Overview of sub-commands::
               node.node_commands <- cmd :: node.node_commands ;
               match path with
               | [] ->
-                  assert ( node.node_cmd = None );
+                  if node.node_cmd != None then
+                    Printf.kprintf failwith
+                      "The subcommand '%s' has been defined twice"
+                      cmd.sub_name
+                  ;
                   node.node_cmd <- Some cmd
               | _ -> add_cmd node.node_map path cmd
         in
