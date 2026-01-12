@@ -320,36 +320,89 @@ module EZCMD = struct
 
     open TYPES
 
+    (* Escape RST special characters that could be misinterpreted *)
+    let escape_rst s =
+      let b = Buffer.create (String.length s) in
+      String.iter (fun c ->
+        match c with
+        | '*' | '`' | '|' | '_' ->
+            Buffer.add_char b '\\';
+            Buffer.add_char b c
+        | _ -> Buffer.add_char b c
+      ) s;
+      Buffer.contents b
+
+    (* Indent all lines of a multi-line string *)
+    let indent_lines ?(prefix="  ") s =
+      String.concat ("\n" ^ prefix) (EzString.split s '\n')
+
+    (* Placeholders for intentional RST formatting to avoid escaping them *)
+    let bold_start = "\x00B\x00"
+    let bold_end = "\x00/B\x00"
+    let italic_start = "\x00I\x00"
+    let italic_end = "\x00/I\x00"
+
+    (* Regex matching all placeholders, compiled once *)
+    let placeholder_re = Re.compile (Re.alt [
+      Re.str bold_start;
+      Re.str bold_end;
+      Re.str italic_start;
+      Re.str italic_end;
+    ])
+
+    (* Replace all RST format placeholders in a single pass *)
+    let replace_placeholders s =
+      Re.replace placeholder_re s ~f:(fun g ->
+        match Re.Group.get g 0 with
+        | p when p = bold_start || p = bold_end -> "**"
+        | p when p = italic_start || p = italic_end -> "*"
+        | _ -> ""
+      )
+
     let doclang_to_rst ?(map= StringMap.empty) s =
       let paren map s =
         match StringMap.find s map with
         | s -> s
         | exception Not_found ->
             match EzString.chop_prefix s ~prefix:"b," with
-            | Some s -> Printf.sprintf "**%s**" s
+            | Some s -> Printf.sprintf "%s%s%s" bold_start s bold_end
             | None ->
                 match EzString.chop_prefix s ~prefix:"i," with
-                | Some s -> Printf.sprintf "*%s*" s
+                | Some s -> Printf.sprintf "%s%s%s" italic_start s italic_end
                 | None ->
                     s
       in
-      EZ_SUBST.string ~paren:paren ~ctxt:map s
+      let result = EZ_SUBST.string ~paren:paren ~ctxt:map s in
+      (* Escape RST special chars, then restore placeholders in a single pass *)
+      escape_rst result |> replace_placeholders
 
     let man_to_rst ?(map = StringMap.empty) ( man : block list ) =
       let b = Buffer.create 1000 in
+      let in_list = ref false in
+      let end_list () =
+        if !in_list then begin
+          Buffer.add_char b '\n';
+          in_list := false
+        end
+      in
       let rec iter = function
         | `S s ->
+            end_list ();
             let s = doclang_to_rst ~map s in
             Printf.bprintf b "\n\n**%s**\n\n" s
         | `Blocks list -> List.iter iter list
         | `I (label, txt) ->
+            in_list := true;
+            let txt = indent_lines ( doclang_to_rst ~map txt ) in
             Printf.bprintf b "\n* %s\n  %s\n"
               ( doclang_to_rst ~map label )
-              ( doclang_to_rst ~map txt )
+              txt
         | `Noblank -> ()
         | `P par ->
+            end_list ();
             Printf.bprintf b "\n%s\n" ( doclang_to_rst ~map par )
         | `Pre code ->
+            end_list ();
             let code = doclang_to_rst ~map code in
             Printf.bprintf b "::\n\n  %s\n\n"
               ( String.concat "\n  "
@@ -357,6 +410,7 @@ module EZCMD = struct
 
       in
       List.iter iter man;
+      end_list ();
       Buffer.contents b
 
 
@@ -406,13 +460,15 @@ module EZCMD = struct
                      else
                        Printf.sprintf ":code:`--%s%s`" s arg_name
                    ) option );
+          let doc = indent_lines ( doclang_to_rst ~map info.arg_doc ) in
           Printf.bprintf b "  %s%s\n"
             (match info.arg_version with
              | None -> ""
              | Some version -> Printf.sprintf "(since version %s) " version)
-            ( doclang_to_rst ~map info.arg_doc )
+            doc
 
-        ) options
+        ) options;
+      Buffer.add_char b '\n'
 
     let to_rst ?(name=Filename.basename Sys.argv.(0)) commands common_args =
 
