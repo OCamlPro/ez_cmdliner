@@ -1,3 +1,6 @@
+## unreleased
+
+* Fix use of deprecated `Printf.kprintf` in OCaml 5.0
 
 ## v0.2.0 (2020-11-27)
 
