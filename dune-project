@@ -17,6 +17,7 @@
    (ocplib_stuff ( >= 0.3 ))
    (ez_subst ( >= 0.1 ))
    (cmdliner (and (>= 1.1.0) (< 2.0.0)))
+   re
    ppx_inline_test
    ppx_expect
    odoc
