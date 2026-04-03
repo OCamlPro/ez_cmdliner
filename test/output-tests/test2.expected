@@ -10,7 +10,7 @@ COMMANDS
        help [--man-format=FMT] [OPTION]… [TOPIC]
            display help about cop and cop commands
 
-       init [--repodir=DIR] [OPTION]… 
+       init [--repodir=DIR] [OPTION]…
            make the current directory a repository
 
        record [OPTION]… [FILE or DIR]…
@@ -33,7 +33,7 @@ MORE HELP
        Use `cop help environment' for help on environment variables.
 
 EXIT STATUS
-       cop exits with the following status:
+       cop exits with:
 
        0   on success.
 

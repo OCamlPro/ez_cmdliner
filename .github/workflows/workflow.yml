@@ -15,40 +15,35 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
-          - windows-latest
         ocaml-compiler:
-          - 4.10.0
+          - 4.14
+          - 5.4
         skip_test:
           - false
 
         include:
           - os: ubuntu-latest
-            ocaml-compiler: 4.07.0
+            ocaml-compiler: 4.08
             skip_test: true
+          - os: macos-latest
+            ocaml-compiler: 4.14
+            skip_test: false
+          - os: windows-latest
+            ocaml-compiler: 4.14
+            skip_test: false
 
 
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Retrieve opam cache
-        uses: actions/cache@v2
-        id: cache-opam
-        with:
-          path: ~/.opam
-          key: v2-${{ runner.os }}-ez_cmdliner-${{ matrix.ocaml-compiler }}-${{ hashFiles('opam/*.opam') }}
-#          restore-keys: |
-#            v2-${{ runner.os }}-opam-${{ matrix.ocaml-compiler }}-
+        uses: actions/checkout@v3
 
       - name: Use OCaml ${{ matrix.ocaml-compiler }}
-        uses: avsm/setup-ocaml@v2
+        uses: ocaml/setup-ocaml@v3
         with:
           ocaml-compiler: ${{ matrix.ocaml-compiler }}
           opam-pin: false
-          opam-depext: false
 
       - name: Set git user
         run: |
@@ -59,11 +54,16 @@ jobs:
 
       - run: opam pin add . -y --no-action
 
-      - run: opam depext -y ez_cmdliner
+      - run: opam install -y --depext-only .
+        name: Install depexts
 #        if: steps.cache-opam.outputs.cache-hit != 'true'
 
-      - run: opam install -y opam/*.opam --deps-only --with-test
+      - run: opam install -y --deps-only .
+        name: Install deps
 #        if: steps.cache-opam.outputs.cache-hit != 'true'
+
+      - run: opam exec -- dune build @install
+        name: build
 
 #      - run: opam upgrade --fixup
 #        if: steps.cache-opam.outputs.cache-hit == 'true'
@@ -71,13 +71,11 @@ jobs:
       - run: dos2unix scripts/*.sh
         if: matrix.os == 'windows-latest'
 
-      - run: make build
+      - name: Install test deps
+        run: opam install -y --deps-only -t .
 
       - name: run test suite
-        run: |
-          ./scripts/before.sh test
-          opam exec -- dune build @runtest
-          ./scripts/after.sh test
+        run: opam exec -- dune build @runtest
         if: matrix.skip_test  != 'true'
 
       - name: test source is well formatted
@@ -86,7 +84,7 @@ jobs:
         if: matrix.ocaml-compiler == '4.10.0' && matrix.os == 'ubuntu-latest'
 
       - name: build-doc
-        if: github.ref == 'refs/heads/master' && matrix.ocaml-compiler == '4.10.0' && matrix.os == 'ubuntu-latest'
+        if: github.ref == 'refs/heads/master' && matrix.ocaml-compiler == '4.14.3' && matrix.os == 'ubuntu-latest'
         run: |
              sudo apt install -yqq python3-sphinx python3-sphinx-rtd-theme
              opam install -y dune odoc
@@ -97,7 +95,7 @@ jobs:
 
       - name: deploy-doc
         uses: JamesIves/github-pages-deploy-action@3.6.2
-        if: github.ref == 'refs/heads/master' && matrix.ocaml-compiler == '4.10.0' && matrix.os == 'ubuntu-latest'
+        if: github.ref == 'refs/heads/master' && matrix.ocaml-compiler == '4.14.3' && matrix.os == 'ubuntu-latest'
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
