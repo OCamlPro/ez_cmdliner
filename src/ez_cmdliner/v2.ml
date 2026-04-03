@@ -570,7 +570,7 @@ Overview of sub-commands::
               match path with
               | [] ->
                   if node.node_cmd != None then
-                    Printf.kprintf failwith
+                    Printf.ksprintf failwith
                       "The subcommand '%s' has been defined twice"
                       cmd.sub_name
                   ;
