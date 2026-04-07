@@ -1,7 +1,11 @@
-## unreleased
+## v0.5.0
 
 * Fix use of deprecated `Printf.kprintf` in OCaml 5.0
 * Update to cmdliner.2.x
+
+## v0.4.3
+
+## v0.4.0
 
 ## v0.2.0 (2020-11-27)
 
