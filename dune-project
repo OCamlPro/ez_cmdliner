@@ -13,7 +13,7 @@
  (synopsis "Easy interface to Cmdliner \195\160 la Arg.parse with sub-commands")
  (description "ez_cmdliner is a simple layer on top of Cmdliner to provide an interface\n\195\160 la Arg.parse with an extension for simple sub-commands.\n")
  (depends
-   (ocaml (>= 4.07.0))
+   (ocaml (>= 4.08.0))
    (ocplib_stuff ( >= 0.3 ))
    (ez_subst ( >= 0.1 ))
    (cmdliner (>= 2.0.0))
